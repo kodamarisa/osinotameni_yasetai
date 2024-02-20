@@ -1,0 +1,1 @@
+# osinotameni_yasetai
