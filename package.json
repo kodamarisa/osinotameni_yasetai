@@ -1,6 +1,9 @@
 {
   "name": "osinotameni-yasetai",
   "private": true,
+  "engines": {
+    "node": "15.x"
+  },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@rails/actioncable": "^6.0.0",
