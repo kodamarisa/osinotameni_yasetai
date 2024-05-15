@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_13_141645) do
+ActiveRecord::Schema.define(version: 2024_05_15_022424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,4 +29,47 @@ ActiveRecord::Schema.define(version: 2024_05_13_141645) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "calendars", force: :cascade do |t|
+    t.string "title", null: false
+    t.bigint "user_id"
+    t.string "color"
+    t.string "image_url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_calendars_on_user_id"
+  end
+
+  create_table "exercises", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "duration"
+    t.integer "difficulty"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.bigint "calendar_id", null: false
+    t.bigint "exercise_id", null: false
+    t.date "date", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["calendar_id"], name: "index_schedules_on_calendar_id"
+    t.index ["exercise_id"], name: "index_schedules_on_exercise_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "line_user_id", null: false
+    t.string "name", null: false
+    t.string "profile_image_url"
+    t.string "access_token"
+    t.string "refresh_token"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["line_user_id"], name: "index_users_on_line_user_id", unique: true
+  end
+
+  add_foreign_key "calendars", "users"
+  add_foreign_key "schedules", "calendars"
+  add_foreign_key "schedules", "exercises"
 end
