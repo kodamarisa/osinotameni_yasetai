@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_15_022424) do
+ActiveRecord::Schema.define(version: 2024_05_15_082212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,15 @@ ActiveRecord::Schema.define(version: 2024_05_15_022424) do
     t.string "text"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "bookmarks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "exercise_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["exercise_id"], name: "index_bookmarks_on_exercise_id"
+    t.index ["user_id"], name: "index_bookmarks_on_user_id"
   end
 
   create_table "calendars", force: :cascade do |t|
@@ -69,6 +78,8 @@ ActiveRecord::Schema.define(version: 2024_05_15_022424) do
     t.index ["line_user_id"], name: "index_users_on_line_user_id", unique: true
   end
 
+  add_foreign_key "bookmarks", "exercises", on_delete: :cascade
+  add_foreign_key "bookmarks", "users", on_delete: :cascade
   add_foreign_key "calendars", "users"
   add_foreign_key "schedules", "calendars"
   add_foreign_key "schedules", "exercises"
