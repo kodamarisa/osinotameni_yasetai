@@ -1,9 +1,11 @@
-<h1>Calendars#index</h1>
+<h1 class="calendar-header">Calendars#index</h1>
 <%= month_calendar events: @events do |date, events| %>
-    <%= date.day %>
+  <div class="calendar-date"><%= date.day %></div>
+  <div class="event-list">
     <% events.each do |event| %>
-      <div><%= event.title %></div>
+      <div class="event-item"><%= event.title %></div>
     <% end %>
-  <% end %>
-  
-  <%= render 'form' %>
+  </div>
+<% end %>
+
+<%= render 'form' %>
