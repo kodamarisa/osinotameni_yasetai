@@ -2,8 +2,8 @@
 
 <%= form_with url: exercises_path, method: :get, local: true do %>
   <div data-controller="autocomplete">
-    <input type="text" name="q" data-autocomplete-target="input" placeholder="Search exercises...">
-    <button type="submit">Search</button>
+    <input type="text" name="q" data-autocomplete-target="input" placeholder="Search exercises..." class="form-control">
+    <button type="submit" class="btn btn-primary">Search</button>
   </div>
 <% end %>
 
@@ -14,16 +14,10 @@
       <th>Description</th>
       <th>Duration</th>
       <th>Difficulty</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <% @exercises.each do |exercise| %>
-      <tr>
-        <td><%= exercise.name %></td>
-        <td><%= exercise.description %></td>
-        <td><%= exercise.duration %></td>
-        <td><%= exercise.difficulty %></td>
-      </tr>
-    <% end %>
+    <%= render partial: 'exercise_row', collection: @exercises, as: :exercise %>
   </tbody>
 </table>

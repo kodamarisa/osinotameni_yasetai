@@ -1,0 +1,7 @@
+<div class="exercise-detail">
+  <h1><%= @exercise.name %></h1>
+  <p><strong>Description:</strong> <%= @exercise.description %></p>
+  <p><strong>Duration:</strong> <%= @exercise.duration %> minutes</p>
+  <p><strong>Difficulty:</strong> <%= @exercise.difficulty %></p>
+  <%= link_to 'Back to Exercise List', exercises_path, class: "btn btn-primary" %>
+</div>
