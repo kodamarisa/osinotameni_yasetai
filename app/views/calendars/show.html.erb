@@ -1,7 +1,16 @@
-<h1>Calendars#show</h1>
+<h1 class="calendar-header">Calendars#show</h1>
 <%= month_calendar events: @events do |date, events| %>
-    <%= date.day %>
+  <div class="calendar-date"><%= date.day %></div>
+  <div class="event-list">
     <% events.each do |event| %>
-      <div><%= event.title %></div>
+      <div class="event-item"><%= event.title %></div>
     <% end %>
-  <% end %>
+  </div>
+<% end %>
+
+<div id="schedule-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="schedule-details"></div>
+  </div>
+</div>

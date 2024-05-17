@@ -1,0 +1,6 @@
+<div class="schedule">
+  <h3><%= schedule.title %></h3>
+  <p>Date: <time datetime="<%= schedule.date %>"><%= schedule.date %></time></p>
+  <%= link_to 'Edit', edit_schedule_path(schedule), class: "btn btn-secondary" %>
+  <%= link_to 'Delete', schedule, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+</div>
