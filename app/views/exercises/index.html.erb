@@ -1,4 +1,12 @@
 <h1>Exercise List</h1>
+
+<%= form_with url: exercises_path, method: :get, local: true do %>
+  <div data-controller="autocomplete">
+    <input type="text" name="q" data-autocomplete-target="input" placeholder="Search exercises...">
+    <button type="submit">Search</button>
+  </div>
+<% end %>
+
 <table>
   <thead>
     <tr>

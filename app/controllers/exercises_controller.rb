@@ -1,5 +1,9 @@
 class ExercisesController < ApplicationController
   def index
-    @exercises = Exercise.all
+    if params[:q].present?
+      @exercises = Exercise.where("name LIKE ?", "%#{params[:q]}%")
+    else
+      @exercises = Exercise.all
+    end
   end
 end
