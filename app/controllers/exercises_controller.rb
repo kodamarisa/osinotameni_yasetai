@@ -1,13 +1,15 @@
 class ExercisesController < ApplicationController
   def index
-    if params[:q].present?
-      @exercises = Exercise.where("name LIKE ?", "%#{params[:q]}%")
-    else
-      @exercises = Exercise.all
-    end
+    @q = Exercise.ransack(params[:q])
+    @exercises = @q.result
   end
 
   def show
     @exercise = Exercise.find(params[:id])
+  end
+
+  def autocomplete
+    @exercises = Exercise.ransack(name_cont: params[:q]).result(distinct: true)
+    render json: @exercises.pluck(:name)
   end
 end

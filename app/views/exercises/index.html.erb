@@ -1,8 +1,8 @@
 <h1>Exercise List</h1>
 
-<%= form_with url: exercises_path, method: :get, local: true do %>
-  <div data-controller="autocomplete">
-    <input type="text" name="q" data-autocomplete-target="input" placeholder="Search exercises..." class="form-control">
+<%= search_form_for @q, url: exercises_path, method: :get, local: true do |f| %>
+  <div data-controller="autocomplete" data-autocomplete-url-value="<%= autocomplete_exercises_path %>">
+    <%= f.search_field :name_cont, placeholder: "Search exercises...", class: "form-control", data: { autocomplete_target: "input" } %>
     <button type="submit" class="btn btn-primary">Search</button>
   </div>
 <% end %>
