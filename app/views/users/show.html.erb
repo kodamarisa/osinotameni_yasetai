@@ -1,0 +1,19 @@
+<h1>User Details</h1>
+
+<p>
+  <strong>Name:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>LINE User ID:</strong>
+  <%= @user.line_user_id %>
+</p>
+
+<% if @user.profile_image_url.present? %>
+  <p>
+    <strong>Profile Image:</strong>
+    <img src="<%= @user.profile_image_url %>" alt="Profile Image">
+  </p>
+<% end %>
+

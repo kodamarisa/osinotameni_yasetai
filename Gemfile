@@ -62,3 +62,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "simple_calendar"
 gem 'ransack'
+gem 'line-bot-api'
+
+gem 'omniauth'
+gem 'omniauth-line'
