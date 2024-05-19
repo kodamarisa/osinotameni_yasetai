@@ -55,6 +55,10 @@ class UsersController < ApplicationController
     head :ok
   end
 
+  def line_registration
+    redirect_to new_user_path
+  end
+
   private
 
   def user_params
