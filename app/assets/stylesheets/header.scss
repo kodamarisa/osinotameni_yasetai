@@ -31,9 +31,7 @@ header {
   transform: rotate(-45deg) translate(4px, -5px);
 }
 
-/* メディアクエリで大きい画面の場合にはハンバーガーボタンを非表示 */
-@media (min-width: 768px) {
-  .navbar-toggle {
-    display: none;
-  }
+/* メディアクエリを削除して、ハンバーガーボタンを常に表示 */
+.navbar-toggle {
+  display: block;
 }

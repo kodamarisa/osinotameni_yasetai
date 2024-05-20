@@ -1,6 +1,8 @@
 <div class="sidebar">
   <ul>
-    <li><a href="/calendars">Calendars</a></li>
+  <% if @calendar.present? %>
+    <li><%= link_to 'Calendars', calendar_path(@calendar) %></li>
+  <% end %>
     <li><a href="/exercises">Exercises</a></li>
     <li><%= link_to 'Register', new_registration_path %></li>
     <li><a href="/terms_of_service">Terms of Service</a></li>
