@@ -15,13 +15,6 @@ ActiveRecord::Schema.define(version: 2024_05_15_082212) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "blogs", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "boards", force: :cascade do |t|
     t.string "title"
     t.string "text"
@@ -57,6 +50,17 @@ ActiveRecord::Schema.define(version: 2024_05_15_082212) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "line_users", force: :cascade do |t|
+    t.string "line_user_id", null: false
+    t.string "name", null: false
+    t.string "profile_image_url"
+    t.string "access_token"
+    t.string "refresh_token"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["line_user_id"], name: "index_line_users_on_line_user_id", unique: true
+  end
+
   create_table "schedules", force: :cascade do |t|
     t.bigint "calendar_id", null: false
     t.bigint "exercise_id", null: false
@@ -68,14 +72,15 @@ ActiveRecord::Schema.define(version: 2024_05_15_082212) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "line_user_id", null: false
-    t.string "name", null: false
-    t.string "profile_image_url"
-    t.string "access_token"
-    t.string "refresh_token"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["line_user_id"], name: "index_users_on_line_user_id", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "bookmarks", "exercises", on_delete: :cascade

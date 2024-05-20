@@ -8,6 +8,7 @@ import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import "controllers"
+import "./sidebar"
 
 Rails.start()
 Turbolinks.start()
