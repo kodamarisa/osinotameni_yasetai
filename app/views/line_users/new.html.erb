@@ -1,0 +1,33 @@
+<h1>Register with LINE</h1>
+
+<%= form_with model: @line_user, local: true do |form| %>
+  <% if @line_user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@line_user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <ul>
+        <% @line_user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, 'Display Name' %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :line_user_id, 'LINE User ID' %>
+    <%= form.text_field :line_user_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :profile_image_url, 'Profile Image URL' %>
+    <%= form.text_field :profile_image_url %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

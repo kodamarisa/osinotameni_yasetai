@@ -1,7 +1,11 @@
 class User < ApplicationRecord
-   has_many :calendars, dependent: :destroy
-   has_many :bookmarks, dependent: :destroy
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
 
-   validates :line_user_id, presence: true, uniqueness: true
-   validates :name, presence: true
+  has_many :calendars, dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
+
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, presence: true, length: { minimum: 6 }, confirmation: true
 end

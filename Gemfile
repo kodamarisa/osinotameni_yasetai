@@ -66,3 +66,4 @@ gem 'line-bot-api'
 
 gem 'omniauth'
 gem 'omniauth-line'
+gem 'devise'
