@@ -1,0 +1,39 @@
+.navbar-toggle {
+  cursor: pointer;
+  display: block; /* ハンバーガーボタンを表示 */
+  z-index: 2; /* ヘッダーがサイドバーよりも前に表示されるようにするため */
+  position: relative;
+}
+
+header {
+  transition: transform 0.3s ease; /* 変形のアニメーション効果を追加 */
+}
+
+.navbar-toggle span {
+  display: block;
+  height: 3px;
+  width: 25px;
+  margin: 5px;
+  background: black;
+  transition: all 0.3s ease;
+}
+
+/* ハンバーガーメニュー表示時のスタイル */
+.navbar-toggle.show span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.navbar-toggle.show span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggle.show span:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -5px);
+}
+
+/* メディアクエリで大きい画面の場合にはハンバーガーボタンを非表示 */
+@media (min-width: 768px) {
+  .navbar-toggle {
+    display: none;
+  }
+}

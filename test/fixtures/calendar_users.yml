@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  calendar: one
+  calendar_type: Calendar
+  user: one
+  user_type: User
+
+two:
+  calendar: two
+  calendar_type: Calendar
+  user: two
+  user_type: User
