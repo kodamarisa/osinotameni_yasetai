@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   root 'home#index'
+
   # Devise routes
-  devise_for :users, controllers: { registrations: 'registrations' }
+  devise_for :users, controllers: { sessions: 'custom_sessions' }
 
   # Custom session routes
   resources :sessions, only: [] do
@@ -26,13 +27,6 @@ Rails.application.routes.draw do
     end
   end
   
-  # Registrations routes
-  resources :exercises, only: [:index, :show] do
-    collection do
-      get :autocomplete
-    end
-  end
-
   # Registration routes
   resources :registrations, only: [:new]
   get '/line_registration', to: 'registrations#line_registration', as: :line_registration
