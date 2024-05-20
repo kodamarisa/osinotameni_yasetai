@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'home#index'
   # Devise routes
   devise_for :users, controllers: { registrations: 'registrations' }
 
