@@ -2,7 +2,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :calendars, dependent: :destroy
+  has_many :calendar_users, as: :user
+  has_many :calendars, through: :calendar_users
+
   has_many :bookmarks, dependent: :destroy
 
   validates :name, presence: true

@@ -1,5 +1,7 @@
 class Calendar < ApplicationRecord
-  belongs_to :user, optional: true
+  has_many :calendar_users
+  has_many :users, through: :calendar_users
+
   has_many :schedules, dependent: :destroy
 
   validates :title, presence: true
