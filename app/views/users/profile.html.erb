@@ -1,3 +1,6 @@
-<h1>Your Profile</h1>
-<p><strong>Name:</strong> <%= current_user.name %></p>
-<p><strong>Email:</strong> <%= current_user.email %></p>
+<% if @user %>
+  <h1>Your Profile</h1>
+  <p><strong>Name:</strong> <%= @user.name %></p>
+  <p><strong>Email:</strong> <%= @user.email %></p>
+  <%= link_to "Edit Customize", edit_customize_path %>
+<% end %>

@@ -1,0 +1,12 @@
+<h1>Customize Page</h1>
+
+<%= link_to 'Go to Bookmarks', bookmarks_path, class: 'btn btn-secondary' %>
+
+<%= form_with(model: @customize, url: customize_update_path, method: :patch) do |form| %>
+  <div class="form-group">
+    <label for="calendar_color">Choose Calendar Color:</label>
+    <%= form.select :calendar_color, options_for_select(['Red', 'Blue', 'Green', 'Yellow']), {}, {class: 'form-control'} %>
+  </div>
+
+  <%= form.submit 'Save Changes', class: 'btn btn-primary' %>
+<% end %>

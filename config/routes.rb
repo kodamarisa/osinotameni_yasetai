@@ -3,8 +3,8 @@ Rails.application.routes.draw do
 
   # Devise routes
   devise_for :users, controllers: {
-    sessions: 'custom_sessions',
-    registrations: 'users/registrations'
+    sessions: 'sessions',
+    registrations: 'registrations'
    }
 
   # Custom session routes
@@ -15,6 +15,12 @@ Rails.application.routes.draw do
       get :destroy, path: '/logout'
       get :login_with_line, as: :line_login
     end
+  end
+
+  # User profile route
+  devise_scope :user do
+    get '/choose_registration', to: 'users/registrations#choose', as: :choose_registration
+    get '/profile', to: 'users#profile', as: :user_profile
   end
   
   # Calendar routes
@@ -38,11 +44,10 @@ Rails.application.routes.draw do
 
   # Add the following routes for line_users and users
   resources :line_users, only: [:show], path: '/line_users'
-  resources :users, only: [], path: '/users' do
-    member do
-      get :profile
-    end
-  end
+
+  get '/customize/edit', to: 'customize#edit', as: :edit_customize
+
+  get '/bookmarks', to: 'bookmarks#index', as: :bookmarks
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
