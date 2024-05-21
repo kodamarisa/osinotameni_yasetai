@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'static_pages/privacy_policy'
+  get 'static_pages/terms_of_service'
   root 'home#index'
 
   # Devise routes
@@ -46,8 +48,12 @@ Rails.application.routes.draw do
   resources :line_users, only: [:show], path: '/line_users'
 
   get '/customize/edit', to: 'customize#edit', as: :edit_customize
+  patch '/customize', to: 'customize#update', as: :customize_update
 
   get '/bookmarks', to: 'bookmarks#index', as: :bookmarks
+
+  get '/privacy_policy', to: 'static_pages#privacy_policy', as: :privacy_policy
+  get '/terms_of_service', to: 'static_pages#terms_of_service', as: :terms_of_service
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
