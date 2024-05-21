@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'customize/edit'
+  get 'customize/update'
   root 'home#index'
 
   # Devise routes

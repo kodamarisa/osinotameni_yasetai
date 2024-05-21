@@ -3,13 +3,15 @@
   <h1>Calendars#show</h1>
 </div>
 
-<%= month_calendar events: @events do |date, events| %>
-  <div class="calendar-date"><%= date.day %></div>
-  <div class="event-list">
-    <% events.each do |event| %>
-      <div class="event-item"><%= event.title %></div>
-    <% end %>
-  </div>
+<%= content_tag :div, class: "simple-calendar #{session[:calendar_color]}" do %>
+  <%= month_calendar events: @events do |date, events| %>
+    <div class="calendar-date"><%= date.day %></div>
+    <div class="event-list">
+      <% events.each do |event| %>
+        <div class="event-item"><%= event.title %></div>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>
 
 <div id="schedule-modal" class="modal">

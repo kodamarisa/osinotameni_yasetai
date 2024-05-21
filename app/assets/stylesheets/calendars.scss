@@ -1,6 +1,16 @@
 // Place all the styles related to the Calendars controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.simple-calendar {
+  background-color: #ffffff; 
+}
+
+.simple-calendar.red { background-color: #ff0000; }
+.simple-calendar.blue { background-color: #0000ff; }
+.simple-calendar.green { background-color: #00ff00; }
+.simple-calendar.yellow { background-color: #ffff00; }
+
 .calendar-header img.calendar-image {
   border-radius: 50%;
   width: 50px;
