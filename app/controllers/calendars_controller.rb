@@ -48,6 +48,6 @@ class CalendarsController < ApplicationController
   end
 
   def calendar_params
-    params.require(:calendar).permit(:title)
-  end  
+    params.require(:calendar).permit(:title, :image)
+  end
 end

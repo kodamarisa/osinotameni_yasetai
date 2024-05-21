@@ -4,7 +4,7 @@ class CreateCalendars < ActiveRecord::Migration[6.1]
       t.string :title, null: false
       t.references :user, foreign_key: true, null: true
       t.string :color, null: true
-      t.string :image_url, null: true
+      t.string :image, null: true
 
 
       t.timestamps
