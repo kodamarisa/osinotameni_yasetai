@@ -10,9 +10,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    super do |resource|
+      if session[:current_calendar_id].present?
+        calendar = Calendar.find(session[:current_calendar_id])
+        calendar.users << resource
+      end
+    end
+  end
 
   # GET /resource/edit
   # def edit

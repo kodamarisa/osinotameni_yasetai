@@ -24,6 +24,9 @@ class CalendarsController < ApplicationController
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
       session[:current_calendar_id] = @calendar.id
+      if user_signed_in?
+        @calendar.users << current_user
+      end
       redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
     else
       render :new
