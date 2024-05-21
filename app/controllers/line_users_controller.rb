@@ -8,6 +8,11 @@ class LineUsersController < ApplicationController
   def create
     @line_user = LineUser.new(line_user_params)
     if @line_user.save
+      if session[:current_calendar_id].present?
+        calendar = Calendar.find(session[:current_calendar_id])
+        calendar.users << @line_user
+      end
+
       redirect_to line_user_path(@line_user), notice: 'Line User was successfully created.'
     else
       render :new
