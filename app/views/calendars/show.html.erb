@@ -1,4 +1,8 @@
-<h1 class="calendar-header">Calendars#show</h1>
+<div class="calendar-header">
+  <%= image_tag @calendar.image.thumb.url, class: 'calendar-image' if @calendar.image.present? %>
+  <h1>Calendars#show</h1>
+</div>
+
 <%= month_calendar events: @events do |date, events| %>
   <div class="calendar-date"><%= date.day %></div>
   <div class="event-list">

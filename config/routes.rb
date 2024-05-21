@@ -2,7 +2,10 @@ Rails.application.routes.draw do
   root 'home#index'
 
   # Devise routes
-  devise_for :users, controllers: { sessions: 'custom_sessions' }
+  devise_for :users, controllers: {
+    sessions: 'custom_sessions',
+    registrations: 'users/registrations'
+   }
 
   # Custom session routes
   resources :sessions, only: [] do

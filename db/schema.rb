@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 2024_05_20_191431) do
     t.string "title", null: false
     t.bigint "user_id"
     t.string "color"
-    t.string "image_url"
+    t.string "image"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_calendars_on_user_id"
