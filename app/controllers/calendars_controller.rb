@@ -4,7 +4,6 @@ class CalendarsController < ApplicationController
 
   def index
     @calendars = Calendar.all
-    @calendar = Calendar.new
   end
 
   def show
@@ -14,6 +13,7 @@ class CalendarsController < ApplicationController
     else
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end
+    expires_now
   end
 
   def new
@@ -23,7 +23,8 @@ class CalendarsController < ApplicationController
   def create
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
-      redirect_to @calendar, notice: 'Calendar was successfully created.'
+      session[:current_calendar_id] = @calendar.id
+      redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
     else
       render :new
     end
