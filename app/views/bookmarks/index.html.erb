@@ -1,0 +1,14 @@
+<h1>My Bookmarks</h1>
+
+<% if @bookmarks.any? %>
+  <ul>
+    <% @bookmarks.each do |bookmark| %>
+      <li>
+        <%= link_to bookmark.exercise.title, exercise_path(bookmark.exercise) %>
+        <%= link_to 'Remove', bookmark_path(bookmark), method: :delete, data: { confirm: 'Are you sure?' } %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>You have no bookmarks yet.</p>
+<% end %>

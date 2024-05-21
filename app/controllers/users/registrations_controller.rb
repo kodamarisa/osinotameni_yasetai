@@ -9,6 +9,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
+  def choose
+    if user_signed_in?
+      redirect_to user_profile_path
+    end
+  end
+
   # POST /resource
   def create
     super do |resource|
