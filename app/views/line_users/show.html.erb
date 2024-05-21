@@ -2,15 +2,15 @@
 
 <p>
   <strong>Name:</strong>
-  <%= @user.name %>
+  <%= @line_user.name %>
 </p>
 
 <p>
   <strong>LINE User ID:</strong>
-  <%= @user.line_user_id %>
+  <%= @line_user.line_user_id %>
 </p>
 
-<% if @user.profile_image_url.present? %>
+<% if @line_user.profile_image_url.present? %>
   <p>
     <strong>Profile Image:</strong>
     <img src="<%= @user.profile_image_url %>" alt="Profile Image">
