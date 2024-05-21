@@ -17,6 +17,12 @@
 
   <div class="content">
     <%= yield %>
+    <footer>
+      <ul>
+        <li><%= link_to t('links.privacy_policy'), privacy_policy_path %></li>
+        <li><%= link_to t('links.terms_of_service'), terms_of_service_path %></li>
+      </ul>
+    </footer>
   </div>
 
   </body>
