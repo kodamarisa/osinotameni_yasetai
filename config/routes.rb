@@ -48,12 +48,12 @@ Rails.application.routes.draw do
   
   # Registration routes
   resources :registrations, only: [:new]
-  get '/line_registration', to: 'registrations#line_registration', as: :line_registration
+  get '/line_registration', to: 'line_users#line_registration', as: :line_registration
   get '/email_registration', to: 'registrations#email_registration', as: :email_registration
 
 
   # LineUsers routes
-  resources :line_users, only: [:show]
+  resources :line_users, only: [:show, :new, :create]
 
   # Customize routes
   resource :customize, only: [:edit, :update]
