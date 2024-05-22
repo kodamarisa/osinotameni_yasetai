@@ -23,17 +23,14 @@ class CalendarsController < ApplicationController
   def create
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
-      session[:current_calendar_id] = @calendar.id
-      if user_signed_in?
-        @calendar.users << current_user
-      end
-      redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
+      handle_successful_save
     else
       render :new
     end
   end
 
   def edit
+    @calendar = Calendar.find(params[:id])
   end
 
   def update
@@ -52,5 +49,16 @@ class CalendarsController < ApplicationController
 
   def calendar_params
     params.require(:calendar).permit(:title, :image)
+  end
+
+  def handle_successful_save
+    session[:current_calendar_id] = @calendar.id
+    add_current_user_to_calendar if user_signed_in?
+    logger.debug "Calendar created with ID: #{@calendar.id}"
+    redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
+  end
+  
+  def add_current_user_to_calendar
+    @calendar.users << current_user
   end
 end

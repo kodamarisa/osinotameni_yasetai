@@ -5,9 +5,16 @@ Rails.application.routes.draw do
 
   # Devise routes
   devise_for :users, controllers: {
-    sessions: 'sessions',
-    registrations: 'registrations'
-   }
+    sessions: 'users/sessions',
+    registrations: 'users/registrations',
+    passwords: 'users/passwords',
+    confirmations: 'users/confirmations',
+    unlocks: 'users/unlocks',
+  }
+
+  authenticated :user do
+    get '/profile', to: 'users#profile', as: :authenticated_root
+  end
 
   # Custom session routes
   resources :sessions, only: [] do
@@ -44,16 +51,20 @@ Rails.application.routes.draw do
   get '/line_registration', to: 'registrations#line_registration', as: :line_registration
   get '/email_registration', to: 'registrations#email_registration', as: :email_registration
 
-  # Add the following routes for line_users and users
-  resources :line_users, only: [:show], path: '/line_users'
 
-  get '/customize/edit', to: 'customize#edit', as: :edit_customize
-  patch '/customize', to: 'customize#update', as: :customize_update
+  # LineUsers routes
+  resources :line_users, only: [:show]
 
-  get '/bookmarks', to: 'bookmarks#index', as: :bookmarks
+  # Customize routes
+  resource :customize, only: [:edit, :update]
 
-  get '/privacy_policy', to: 'static_pages#privacy_policy', as: :privacy_policy
-  get '/terms_of_service', to: 'static_pages#terms_of_service', as: :terms_of_service
+  # Bookmarks route
+  resources :bookmarks, only: [:index]
 
+  # Static pages routes
+  scope controller: :static_pages do
+    get :privacy_policy
+    get :terms_of_service
+  end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
