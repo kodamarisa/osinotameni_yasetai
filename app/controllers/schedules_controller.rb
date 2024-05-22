@@ -3,6 +3,7 @@ class SchedulesController < ApplicationController
 
   def new
     @schedule = Schedule.new
+    @exercises = Exercise.all
   end
 
   def create
@@ -10,11 +11,12 @@ class SchedulesController < ApplicationController
     if @schedule.save
       redirect_to calendar_path(@schedule.calendar), notice: 'Schedule was successfully created.'
     else
-      redirect_to calendar_path(@schedule.calendar), alert: 'Error creating schedule.'
+      redirect_to calendar_path(params[:calendar_id]), alert: 'Error creating schedule.'
     end
   end
 
   def edit
+    @exercises = Exercise.all
   end
 
   def update
@@ -38,6 +40,6 @@ class SchedulesController < ApplicationController
   end
 
   def schedule_params
-    params.require(:schedule).permit(:title, :date, :calendar_id)
+    params.require(:schedule).permit(:date, :calendar_id, :exercise_id, :repetitions, :duration)
   end
 end
