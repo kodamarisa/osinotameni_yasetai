@@ -1,7 +1,7 @@
 <div class="sidebar">
   <ul>
-    <% if @calendar.present? %>
-      <li><%= link_to 'Calendars', calendar_path(@calendar) %></li>
+    <% if session[:current_calendar_id].present? %>
+      <li><%= link_to 'Calendar', calendar_path(session[:current_calendar_id]) %></li>
     <% end %>
     <% if user_signed_in? %>
       <%= link_to 'My Profile', user_profile_path %>

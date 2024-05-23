@@ -7,7 +7,7 @@ class CalendarsController < ApplicationController
   end
 
   def show
-    @calendar = Calendar.find_by(id: params[:id])
+    @customize = Customize.find_by(calendar_id: @calendar.id)
     if @calendar
       @events = @calendar.schedules
     else
@@ -44,7 +44,11 @@ class CalendarsController < ApplicationController
   private
 
   def set_calendar
-    @calendar = Calendar.find(params[:id])
+    @calendar = Calendar.find_by(id: params[:id])
+    unless @calendar
+      @calendar = Calendar.create(title: "Default Calendar")
+      session[:current_calendar_id] = @calendar.id
+    end
   end
 
   def calendar_params
@@ -52,11 +56,15 @@ class CalendarsController < ApplicationController
   end
 
   def handle_successful_save
-    session[:current_calendar_id] = @calendar.id
-    add_current_user_to_calendar if user_signed_in?
-    logger.debug "Calendar created with ID: #{@calendar.id}"
-    redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
+    if @calendar
+      session[:current_calendar_id] = @calendar.id
+      add_current_user_to_calendar if user_signed_in?
+      redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
+    else
+      redirect_to calendars_path, alert: 'Error creating calendar.'
+    end
   end
+  
   
   def add_current_user_to_calendar
     @calendar.users << current_user

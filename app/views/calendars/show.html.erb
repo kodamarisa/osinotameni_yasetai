@@ -1,6 +1,13 @@
 <div class="calendar-header">
-  <%= image_tag @calendar.image.thumb.url, class: 'calendar-image' if @calendar.image.present? %>
   <h1>Calendars#show</h1>
+</div>
+
+<div class="calendar-header">
+  <% if @customize.image.present? %>
+    <%= image_tag @customize.image.url, class: 'calendar-image' %>
+  <% else %>
+    <p>No image available</p>
+  <% end %>
 </div>
 
 <%= content_tag :div, class: "simple-calendar #{session[:calendar_color]}" do %>

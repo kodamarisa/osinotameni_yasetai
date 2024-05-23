@@ -10,6 +10,7 @@ import "channels";
 import "controllers";
 import "./sidebar";
 import "./schedule";
+import "./custom_calendar";
 
 Rails.start();
 Turbolinks.start();

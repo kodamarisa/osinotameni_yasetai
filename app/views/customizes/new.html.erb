@@ -8,5 +8,10 @@
     <%= form.select :calendar_color, options_for_select(['Red', 'Blue', 'Green', 'Yellow']), {}, {class: 'form-control'} %>
   </div>
 
+  <div class="form-group">
+    <%= form.label :image, 'Upload Image' %>
+    <%= form.file_field :image, class: 'form-control' %>
+  </div>
+
   <%= form.submit 'Save Changes', class: 'btn btn-primary' %>
 <% end %>

@@ -9,9 +9,13 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+  def create
+    super do |resource|
+      if resource.persisted? && session[:current_calendar_id].blank?
+        session[:current_calendar_id] = resource.calendar_id
+      end
+    end
+  end
 
   # DELETE /resource/sign_out
   def destroy
