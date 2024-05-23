@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       get :new, path: '/login'
       post :create, path: '/login'
       get :destroy, path: '/logout'
-      get :login_with_line, as: :line_login
+      get :line_login, as: :line_login
     end
   end
 
@@ -56,7 +56,7 @@ Rails.application.routes.draw do
   resources :line_users, only: [:show, :new, :create]
 
   # Customize routes
-  resource :customize, only: [:edit, :update]
+  resources :customizes, only: [:new, :edit, :create, :update]
 
   # Bookmarks route
   resources :bookmarks, only: [:index]

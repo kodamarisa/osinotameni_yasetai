@@ -17,3 +17,7 @@
   </p>
 <% end %>
 <%= link_to "Edit Customize", edit_customize_path %>
+
+<% if current_user %>
+  <%= link_to "Logout", sessions_destroy_path, method: :delete %>
+<% end %>

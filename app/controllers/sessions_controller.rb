@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
 
     if user.save
       session[:line_user_id] = user.id
-      redirect_to calendars_path, notice: 'Successfully logged in with LINE!'
+      redirect_to user_profile_path, notice: 'Successfully logged in with LINE!'
     else
       redirect_to root_path, alert: 'Failed to login with LINE.'
     end

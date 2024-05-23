@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :calendars, through: :calendar_users
 
   has_many :bookmarks, dependent: :destroy
+  has_one :customize, dependent: :destroy
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
