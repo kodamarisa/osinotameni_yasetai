@@ -17,7 +17,9 @@
     </div>
     <div class="event-list">
       <% events.each do |event| %>
-        <div class="event-item"><%= event.title %></div>
+        <div class="event-item">
+          <%= link_to event.exercise.name, schedule_path(event), class: 'exercise-link' %>
+        </div>
       <% end %>
     </div>
   <% end %>

@@ -9,7 +9,7 @@ class CalendarsController < ApplicationController
   def show
     @customize = Customize.find_by(calendar_id: @calendar.id)
     if @calendar
-      @events = @calendar.schedules
+      @events = @calendar.schedules.includes(:exercise)
     else
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end
