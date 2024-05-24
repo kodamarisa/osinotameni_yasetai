@@ -29,9 +29,12 @@ ActiveRecord::Schema.define(version: 2024_05_23_100252) do
     t.bigint "calendar_id", null: false
     t.string "user_type", null: false
     t.bigint "user_id", null: false
+    t.string "line_user_type"
+    t.bigint "line_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["calendar_type", "calendar_id"], name: "index_calendar_users_on_calendar"
+    t.index ["line_user_type", "line_user_id"], name: "index_calendar_users_on_line_user"
     t.index ["user_type", "user_id"], name: "index_calendar_users_on_user"
   end
 
