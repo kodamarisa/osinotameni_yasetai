@@ -10,4 +10,15 @@ class CreateCustomizes < ActiveRecord::Migration[6.1]
 
     change_column :customizes, :line_user_id, :bigint, null: true
   end
+
+  def down
+    # Handle NULL values before disallowing them (if needed)
+    # This might involve setting a default value or other logic
+    # Customize.where(line_user_id: nil).update_all(line_user_id: 0) # Example placeholder, ensure this makes sense in your context
+
+    # Disallow NULL values for line_user_id
+    change_column :customizes, :line_user_id, :bigint, null: false
+
+    drop_table :customizes
+  end
 end
