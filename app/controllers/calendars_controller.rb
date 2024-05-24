@@ -23,12 +23,7 @@ class CalendarsController < ApplicationController
   def create
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
-      @schedule = @calendar.schedules.build(schedule_params)
-      if @schedule.save
-        handle_successful_save
-      else
-        render :new
-      end
+      handle_successful_save
     else
       render :new
     end
@@ -60,16 +55,21 @@ class CalendarsController < ApplicationController
     params.require(:calendar).permit(:title, :image)
   end
 
+  def schedule_params
+    params.require(:schedule).permit(:start_time, :end_time, :exercise_id, :date, :repetitions, :duration)
+  end
+
   def handle_successful_save
-    if @calendar
+    @schedule = @calendar.schedules.build(schedule_params)
+    if @schedule.save
       session[:current_calendar_id] = @calendar.id
       add_current_user_to_calendar if user_signed_in?
       redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
     else
-      redirect_to calendars_path, alert: 'Error creating calendar.'
+      render :new
     end
   end
-  
+
   def add_current_user_to_calendar
     @calendar.users << current_user
   end
