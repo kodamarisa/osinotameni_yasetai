@@ -7,11 +7,12 @@ class CalendarsController < ApplicationController
   end
 
   def show
-    @customize = Customize.find_by(calendar_id: @calendar.id)
     if @calendar
+      @customize = Customize.find_by(calendar_id: @calendar.id)
       @events = @calendar.schedules.includes(:exercise)
     else
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
+      return
     end
     expires_now
   end
@@ -30,7 +31,7 @@ class CalendarsController < ApplicationController
   end
 
   def edit
-    # 重複するset_calendarは削除
+
   end
 
   def update
