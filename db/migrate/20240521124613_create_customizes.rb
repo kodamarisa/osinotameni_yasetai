@@ -7,5 +7,7 @@ class CreateCustomizes < ActiveRecord::Migration[6.1]
 
       t.timestamps
     end
+
+    change_column :customizes, :line_user_id, :bigint, null: true
   end
 end
