@@ -11,8 +11,6 @@ class CustomizesController < ApplicationController
   
     if line_user_signed_in?
       @customize.line_user = current_line_user
-    elsif user_signed_in?
-      @customize.user = current_user
     end
   
     current_calendar_id = session[:current_calendar_id]
