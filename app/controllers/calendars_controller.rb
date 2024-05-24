@@ -24,14 +24,17 @@ class CalendarsController < ApplicationController
   def create
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
-      handle_successful_save
+      if params[:schedule].present?
+        handle_successful_save
+      else
+        redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
+      end
     else
       render :new
     end
   end
 
   def edit
-
   end
 
   def update

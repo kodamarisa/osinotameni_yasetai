@@ -3,11 +3,13 @@ class SchedulesController < ApplicationController
   before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def new
+    @calendar = Calendar.find(params[:calendar_id])
     @schedule = @calendar.schedules.build
     @exercises = Exercise.all
   end
 
   def create
+    @schedule = Calendar.find(params[:calendar_id])
     @schedule = @calendar.schedules.build(schedule_params)
 
     if @schedule.save
@@ -43,10 +45,6 @@ class SchedulesController < ApplicationController
 
   def set_calendar
     @calendar = Calendar.find(params[:calendar_id])
-  end
-
-  def set_schedule
-    @schedule = @calendar.schedules.find(params[:id])
   end
 
   def schedule_params
