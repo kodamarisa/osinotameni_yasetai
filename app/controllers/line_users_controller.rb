@@ -12,7 +12,6 @@ class LineUsersController < ApplicationController
         calendar = Calendar.find(session[:current_calendar_id])
         calendar.users << @line_user
       end
-
       redirect_to line_user_path(@line_user), notice: 'Line User was successfully created.'
     else
       render :new
@@ -58,11 +57,6 @@ class LineUsersController < ApplicationController
     end
 
     head :ok
-  end
-
-  def line_registration
-    @line_user = LineUser.new
-    render 'line_users/new'
   end
 
   private

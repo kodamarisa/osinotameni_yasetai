@@ -6,6 +6,8 @@ class UsersController < ApplicationController
       @user = current_user
     elsif current_line_user
       @line_user = current_line_user
+    else
+      redirect_to new_user_session_path
     end
   end
 
@@ -17,7 +19,7 @@ class UsersController < ApplicationController
     elsif line_user_signed_in?
       authenticate_line_user!
     else
-      redirect_to new_user_session_path
+      redirect_to new_registration_path
     end
   end
 end

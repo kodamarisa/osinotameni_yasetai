@@ -10,17 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_21_124613) do
+ActiveRecord::Schema.define(version: 2024_05_23_100252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "boards", force: :cascade do |t|
-    t.string "title"
-    t.string "text"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
 
   create_table "bookmarks", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -45,8 +38,8 @@ ActiveRecord::Schema.define(version: 2024_05_21_124613) do
   create_table "calendars", force: :cascade do |t|
     t.string "title", null: false
     t.bigint "user_id"
-    t.string "color"
     t.string "image"
+    t.string "calendar_color"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_calendars_on_user_id"
@@ -54,10 +47,12 @@ ActiveRecord::Schema.define(version: 2024_05_21_124613) do
 
   create_table "customizes", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "line_user_id", null: false
+    t.bigint "line_user_id"
     t.bigint "calendar_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "calendar_color"
+    t.string "image"
     t.index ["calendar_id"], name: "index_customizes_on_calendar_id"
     t.index ["line_user_id"], name: "index_customizes_on_line_user_id"
     t.index ["user_id"], name: "index_customizes_on_user_id"
@@ -89,6 +84,8 @@ ActiveRecord::Schema.define(version: 2024_05_21_124613) do
     t.date "date", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "repetitions"
+    t.integer "duration"
     t.index ["calendar_id"], name: "index_schedules_on_calendar_id"
     t.index ["exercise_id"], name: "index_schedules_on_exercise_id"
   end

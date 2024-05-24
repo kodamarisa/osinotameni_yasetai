@@ -1,6 +1,11 @@
-<% if @user %>
+<% if user_signed_in? %>
   <h1>Your Profile</h1>
   <p><strong>Name:</strong> <%= @user.name %></p>
   <p><strong>Email:</strong> <%= @user.email %></p>
-  <%= link_to "Edit Customize", edit_customize_path %>
+  <% if @user.customize.present? %>
+    <%= link_to "Edit Customize", edit_customize_path(@user.customize) %>
+  <% else %>
+    <%= link_to "Create Customize", new_customize_path %>
+  <% end %>
+  <%= link_to 'Logout', destroy_user_session_path, method: :delete %>
 <% end %>

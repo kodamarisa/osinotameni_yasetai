@@ -1,9 +1,15 @@
 <div class="sidebar">
   <ul>
-  <% if @calendar.present? %>
-    <li><%= link_to 'Calendars', calendar_path(@calendar) %></li>
-  <% end %>
+    <% if session[:current_calendar_id].present? %>
+      <li><%= link_to 'Calendar', calendar_path(session[:current_calendar_id]) %></li>
+    <% end %>
+    <% if user_signed_in? %>
+      <%= link_to 'My Profile', user_profile_path %>
+    <% elsif @current_line_user %>
+      <%= link_to 'My Profile', line_user_path(current_line_user) %>
+    <% else %>
+      <%= link_to 'Register', new_registration_path %>
+    <% end %>
     <li><a href="/exercises">Exercises</a></li>
-    <li><%= link_to 'Register', choose_registration_path %></li>
   </ul>
 </div>

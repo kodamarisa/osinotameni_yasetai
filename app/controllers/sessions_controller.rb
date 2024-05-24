@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
 
     if user.save
       session[:line_user_id] = user.id
-      redirect_to calendars_path, notice: 'Successfully logged in with LINE!'
+      redirect_to user_profile_path, notice: 'Successfully logged in with LINE!'
     else
       redirect_to root_path, alert: 'Failed to login with LINE.'
     end
@@ -20,4 +20,10 @@ class SessionsController < ApplicationController
     session[:line_user_id] = nil
     redirect_to root_path, notice: 'Logged out successfully.'
   end
+
+  def current_line_user
+    @current_line_user ||= LineUser.find_by(id: session[:line_user_id])
+  end
+
+  helper_method :current_line_user
 end
