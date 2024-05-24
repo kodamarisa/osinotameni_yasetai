@@ -3,7 +3,7 @@
 </div>
 
 <div class="calendar-header">
-  <% if @customize.image.present? %>
+  <% if @customize.present? && @customize.image.present? %>
     <%= image_tag @customize.image.url, class: 'calendar-image' %>
   <% else %>
     <p>No image available</p>

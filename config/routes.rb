@@ -12,22 +12,19 @@ Rails.application.routes.draw do
     unlocks: 'users/unlocks',
   }
 
-  authenticated :user do
-    get '/profile', to: 'users#profile', as: :authenticated_root
+  # Custom session routes
+  devise_scope :user do
+    get '/login', to: 'users/sessions#new', as: :new_line_user_session
+    post '/login', to: 'users/sessions#create'
+    get '/logout', to: 'users/sessions#destroy', as: :destroy_line_user_session
+    get '/line_login', to: 'sessions#line_login', as: :login_with_line
   end
 
-  # Custom session routes
-  resources :sessions, only: [] do
-    collection do
-      get :new, path: '/login'
-      post :create, path: '/login'
-      get :destroy, path: '/logout'
-      get :line_login, as: :line_login
-    end
-  end
+  get '/auth/:provider/callback', to: 'sessions#create'
+  get '/auth/failure', to: redirect('/')
 
   # User profile route
-  devise_scope :user do
+  authenticated :user do
     get '/choose_registration', to: 'users/registrations#choose', as: :choose_registration
     get '/profile', to: 'users#profile', as: :user_profile
   end
@@ -50,7 +47,6 @@ Rails.application.routes.draw do
   resources :registrations, only: [:new]
   get '/line_registration', to: 'line_users#line_registration', as: :line_registration
   get '/email_registration', to: 'registrations#email_registration', as: :email_registration
-
 
   # LineUsers routes
   resources :line_users, only: [:show, :new, :create]

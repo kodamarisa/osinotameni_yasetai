@@ -1,5 +1,6 @@
 class CustomizesController < ApplicationController
   before_action :set_customize, only: [:edit, :update]
+  before_action :authenticate_user_or_line_user!
 
   def new
     @customize = Customize.new
@@ -7,7 +8,11 @@ class CustomizesController < ApplicationController
 
   def create
     @customize = Customize.new(customize_params)
-    @customize.user = current_user
+    if line_user_signed_in?
+      @customize.line_user = current_line_user
+    else
+      @customize.user = current_user
+    end
   
     current_calendar_id = session[:current_calendar_id]
     calendar = Calendar.find_by(id: current_calendar_id)
@@ -16,16 +21,16 @@ class CustomizesController < ApplicationController
       calendar = Calendar.create(title: "Default Calendar")
     end
   
-    if current_user.guest?
-      line_user = current_user.line_user
-      @customize.line_user = line_user
-    end
-  
     @customize.calendar = calendar
   
     if @customize.save
-      current_user.update(calendar: calendar)
-      current_user.calendar.update(calendar_color: @customize.calendar_color)
+      if current_user
+        current_user.update(calendar: calendar)
+        current_user.calendar.update(calendar_color: @customize.calendar_color)
+      elsif current_line_user
+        current_line_user.update(calendar: calendar)
+        current_line_user.calendar.update(calendar_color: @customize.calendar_color)
+      end
       session[:calendar_color] = @customize.calendar_color
       redirect_to calendar_path(session[:current_calendar_id]), notice: 'Customization settings were successfully created.'
     else
@@ -38,10 +43,16 @@ class CustomizesController < ApplicationController
 
   def update
     if @customize.update(customize_params)
-      current_user.calendar.update(calendar_color: @customize.calendar_color)
-      session[:calendar_color] = @customize.calendar_color
-      session[:current_calendar_id] = current_user.calendar.id
-      redirect_to calendar_path(current_user.calendar), notice: 'Customization settings were successfully updated.'
+      if current_user
+        current_user.calendar.update(calendar_color: @customize.calendar_color)
+        session[:calendar_color] = @customize.calendar_color
+        session[:current_calendar_id] = current_user.calendar.id
+      elsif current_line_user
+        current_line_user.calendar.update(calendar_color: @customize.calendar_color)
+        session[:calendar_color] = @customize.calendar_color
+        session[:current_calendar_id] = current_line_user.calendar.id
+      end
+      redirect_to calendar_path(current_user&.calendar || current_line_user&.calendar), notice: 'Customization settings were successfully updated.'
     else
       render :edit
     end
@@ -50,7 +61,13 @@ class CustomizesController < ApplicationController
   private
 
   def set_customize
-    @customize = Customize.find_or_initialize_by(user_id: current_user.id)
+    if user_signed_in?
+      @customize = Customize.find_or_initialize_by(user_id: current_user.id)
+    elsif line_user_signed_in?
+      @customize = Customize.find_or_initialize_by(line_user_id: current_line_user.id)
+    else
+      redirect_to root_path, alert: "You are not authorized to access this page."
+    end
   end
 
   def customize_params

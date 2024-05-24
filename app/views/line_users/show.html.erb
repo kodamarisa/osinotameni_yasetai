@@ -16,7 +16,7 @@
     <img src="<%= @user.profile_image_url %>" alt="Profile Image">
   </p>
 <% end %>
-<%= link_to "Edit Customize", edit_customize_path %>
+<%= link_to "Edit Customize", new_customize_path %>
 
 <% if current_user %>
   <%= link_to "Logout", sessions_destroy_path, method: :delete %>

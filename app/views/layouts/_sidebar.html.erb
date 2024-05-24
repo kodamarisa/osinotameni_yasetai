@@ -5,6 +5,8 @@
     <% end %>
     <% if user_signed_in? %>
       <%= link_to 'My Profile', user_profile_path %>
+    <% elsif @current_line_user %>
+      <%= link_to 'My Profile', line_user_path(current_line_user) %>
     <% else %>
       <%= link_to 'Register', new_registration_path %>
     <% end %>

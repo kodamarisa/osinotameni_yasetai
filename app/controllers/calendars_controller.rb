@@ -1,6 +1,6 @@
 class CalendarsController < ApplicationController
   before_action :set_calendar, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: [:index, :show, :new, :create, :edit, :update, :destroy] 
+  before_action :authenticate_user_or_line_user!, except: [:index, :show, :new, :create, :edit, :update, :destroy] 
 
   def index
     @calendars = Calendar.all
@@ -68,5 +68,9 @@ class CalendarsController < ApplicationController
   
   def add_current_user_to_calendar
     @calendar.users << current_user
+  end
+
+  def add_current_line_user_to_calendar
+    @calendar.line_users << current_line_user
   end
 end

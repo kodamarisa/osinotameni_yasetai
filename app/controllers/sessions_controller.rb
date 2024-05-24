@@ -20,4 +20,10 @@ class SessionsController < ApplicationController
     session[:line_user_id] = nil
     redirect_to root_path, notice: 'Logged out successfully.'
   end
+
+  def current_line_user
+    @current_line_user ||= LineUser.find_by(id: session[:line_user_id])
+  end
+
+  helper_method :current_line_user
 end

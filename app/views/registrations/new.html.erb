@@ -1,5 +1,6 @@
 <h1>Choose Registration Method</h1>
 
-<%= link_to 'Register with LINE', line_registration_path %>
+<%= link_to 'Register with LINE', new_line_user_path %>
 <%= link_to 'Register with Email', email_registration_path %>
 <%= link_to 'Login', new_user_session_path %>
+<%= link_to 'Login with LINE', '/auth/line', class: 'btn btn-primary' %>

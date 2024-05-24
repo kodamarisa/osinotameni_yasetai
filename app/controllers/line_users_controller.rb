@@ -59,11 +59,6 @@ class LineUsersController < ApplicationController
     head :ok
   end
 
-  def line_registration
-    @line_user = LineUser.new
-    render 'line_users/new'
-  end
-
   private
 
   def line_user_params
