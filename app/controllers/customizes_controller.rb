@@ -8,14 +8,11 @@ class CustomizesController < ApplicationController
 
   def create
     @customize = Customize.new(customize_params)
-
+  
     if line_user_signed_in?
       @customize.line_user = current_line_user
     elsif user_signed_in?
       @customize.user = current_user
-    else
-      redirect_to root_path, alert: "You must be signed in to create a customization."
-      return
     end
   
     current_calendar_id = session[:current_calendar_id]
