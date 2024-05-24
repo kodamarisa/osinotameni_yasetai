@@ -11,8 +11,10 @@ class Users::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
   def create
     super do |resource|
-      if resource.persisted? && session[:current_calendar_id].blank?
-        session[:current_calendar_id] = resource.calendar_id
+      if session[:current_calendar_id].present?
+        calendar = Calendar.find(session[:current_calendar_id])
+        redirect_to calendar_path(calendar)
+        return
       end
     end
   end
