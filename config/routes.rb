@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   resources :calendars, only: [:index, :show, :new, :create, :edit]
   
   # Schedule routes
-  resources :schedules, only: [:new, :create, :edit, :update, :destroy]
+  resources :schedules, only: [:new, :create, :show, :edit, :update, :destroy]
   
   # Exercise routes
   resources :exercises, only: [:index, :show] do

@@ -4,7 +4,7 @@
   <ul>
     <% @bookmarks.each do |bookmark| %>
       <li>
-        <%= link_to bookmark.exercise.title, exercise_path(bookmark.exercise) %>
+        <%= link_to bookmark.exercise.name, exercise_path(bookmark.exercise) %>
         <%= link_to 'Remove', bookmark_path(bookmark), method: :delete, data: { confirm: 'Are you sure?' } %>
       </li>
     <% end %>

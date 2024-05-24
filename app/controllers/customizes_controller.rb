@@ -37,6 +37,10 @@ class CustomizesController < ApplicationController
     end
   end
 
+  def show
+    @schedule = Schedule.find(params[:id])
+  end
+
   def edit
   end
 
