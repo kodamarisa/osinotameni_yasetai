@@ -23,14 +23,19 @@ class CalendarsController < ApplicationController
   def create
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
-      handle_successful_save
+      @schedule = @calendar.schedules.build(schedule_params)
+      if @schedule.save
+        handle_successful_save
+      else
+        render :new
+      end
     else
       render :new
     end
   end
 
   def edit
-    @calendar = Calendar.find(params[:id])
+    # 重複するset_calendarは削除
   end
 
   def update
@@ -64,7 +69,6 @@ class CalendarsController < ApplicationController
       redirect_to calendars_path, alert: 'Error creating calendar.'
     end
   end
-  
   
   def add_current_user_to_calendar
     @calendar.users << current_user

@@ -30,11 +30,10 @@ Rails.application.routes.draw do
   end
   
   # Calendar routes
-  resources :calendars, only: [:index, :show, :new, :create, :edit]
-  
-  # Schedule routes
-  resources :schedules, only: [:new, :create, :show, :edit, :update, :destroy]
-  
+  resources :calendars, except: [:destroy, :update] do
+    resources :schedules, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  end
+
   # Exercise routes
   resources :exercises, only: [:index, :show] do
     collection do

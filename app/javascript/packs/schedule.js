@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       const date = event.currentTarget.dataset.date;
       const calendarId = event.currentTarget.dataset.calendarId;
-      fetch(`/schedules/new?date=${date}&calendar_id=${calendarId}`)
+      fetch(`/calendars/${calendarId}/schedules/new?date=${date}`) // ルーティングに合わせてURLを変更
         .then(response => response.text())
         .then(html => {
           document.getElementById("schedule-details").innerHTML = html;

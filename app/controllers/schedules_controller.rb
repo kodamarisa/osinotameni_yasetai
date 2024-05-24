@@ -1,31 +1,24 @@
 class SchedulesController < ApplicationController
-  before_action :set_schedule, only: [:edit, :update, :destroy]
+  before_action :set_calendar
+  before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def new
-    @schedule = Schedule.new
+    @schedule = @calendar.schedules.build
     @exercises = Exercise.all
-
-    session[:current_calendar_id] = params[:calendar_id]
   end
 
   def create
-    @schedule = Schedule.new(schedule_params)
-    if params[:calendar_id].present?
-      @schedule.calendar_id = params[:calendar_id]
-    else
-      @schedule.calendar_id = default_calendar_id
-    end
-  
+    @schedule = @calendar.schedules.build(schedule_params)
+
     if @schedule.save
-      redirect_to calendar_path(@schedule.calendar), notice: 'Schedule was successfully created.'
+      redirect_to calendar_path(@calendar), notice: 'Schedule was successfully created.'
     else
-      redirect_to new_schedule_path(date: params[:date], calendar_id: params[:calendar_id]), alert: 'Error creating schedule.'
+      @exercises = Exercise.all
+      render :new
     end
   end
-  
 
   def show
-    @schedule = Schedule.find(params[:id])
   end
 
   def edit
@@ -34,29 +27,29 @@ class SchedulesController < ApplicationController
 
   def update
     if @schedule.update(schedule_params)
-      redirect_to calendar_path(@schedule.calendar), notice: 'Schedule was successfully updated.'
+      redirect_to calendar_path(@calendar), notice: 'Schedule was successfully updated.'
     else
+      @exercises = Exercise.all
       render :edit
     end
   end
 
   def destroy
-    calendar = @schedule.calendar
     @schedule.destroy
-    redirect_to calendar_path(calendar), notice: 'Schedule was successfully deleted.'
+    redirect_to calendar_path(@calendar), notice: 'Schedule was successfully deleted.'
   end
 
   private
 
-  def default_calendar_id
-    calendar_id = session[:current_calendar_id]
+  def set_calendar
+    @calendar = Calendar.find(params[:calendar_id])
   end
 
   def set_schedule
-    @schedule = Schedule.find(params[:id])
+    @schedule = @calendar.schedules.find(params[:id])
   end
 
   def schedule_params
-    params.require(:schedule).permit(:date, :calendar_id, :exercise_id, :repetitions, :duration)
+    params.require(:schedule).permit(:date, :exercise_id, :repetitions, :duration)
   end
 end
