@@ -12,8 +12,10 @@
 
   <body>
 
-  <%= render 'layouts/header' %>
-  <%= render 'layouts/sidebar' %>
+  <% unless controller_name == 'home' && action_name == 'index' %>
+    <%= render 'layouts/header' %>
+    <%= render 'layouts/sidebar' %>
+  <% end %>
 
   <div class="content">
     <%= yield %>

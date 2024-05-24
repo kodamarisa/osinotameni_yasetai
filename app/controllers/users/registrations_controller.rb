@@ -20,7 +20,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super do |resource|
       if session[:current_calendar_id].present?
         calendar = Calendar.find(session[:current_calendar_id])
-        calendar.users << resource
+        calendar_user = CalendarUser.create(user: resource, calendar: calendar, calendar_type: 'default_value')
+        unless calendar_user.persisted?
+          resource.errors.add(:base, "CalendarUser could not be created")
+          raise ActiveRecord::Rollback
+        end
       end
     end
   end

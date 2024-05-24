@@ -1,0 +1,35 @@
+.sidebar {
+  width: 200px; /* サイドメニューの幅 */
+  height: 100%; /* サイドメニューの高さをブラウザの高さに合わせる */
+  background-color: #f0f0f0; /* サイドメニューの背景色 */
+  position: fixed; /* 固定位置 */
+  top: 0; /* 上端に配置 */
+  left: -200px; /* 初期状態で非表示にする */
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.sidebar.active {
+  left: 0; /* サイドバーを表示 */
+}
+
+.sidebar ul {
+  list-style-type: none; /* 箇条書きのマーカーを削除 */
+  padding: 0; /* リストの内側の余白を削除 */
+}
+
+.sidebar ul li {
+  padding: 10px 0; /* メニューアイテムの上下に余白を設定 */
+}
+
+.sidebar ul li a {
+  display: block; /* リンクをブロック要素に変更 */
+  padding: 10px; /* リンクの内側の余白を設定 */
+  text-decoration: none; /* リンクの下線を削除 */
+  color: #333; /* リンクのテキスト色 */
+}
+
+.sidebar ul li a:hover {
+  background-color: #ccc; /* マウスオーバー時の背景色 */
+}
+  
