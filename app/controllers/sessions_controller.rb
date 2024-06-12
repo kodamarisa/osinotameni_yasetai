@@ -9,6 +9,15 @@ class SessionsController < ApplicationController
     end
 
     if user.save
+      if session[:guest_user_id].present?
+        guest = GuestUser.find_by(id: session[:guest_user_id])
+        if guest.present? && guest.calendar.present?
+          guest.calendar.update(user: user)
+          guest.destroy
+          session[:guest_user_id] = nil
+        end
+      end
+  
       session[:line_user_id] = user.id
       redirect_to user_profile_path, notice: 'Successfully logged in with LINE!'
     else

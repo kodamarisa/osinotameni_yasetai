@@ -17,14 +17,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    super do |resource|
-      if session[:current_calendar_id].present?
-        calendar = Calendar.find(session[:current_calendar_id])
-        calendar_user = CalendarUser.create(user: resource, calendar: calendar, calendar_type: 'default_value')
-        unless calendar_user.persisted?
-          resource.errors.add(:base, "CalendarUser could not be created")
-          raise ActiveRecord::Rollback
+    super do |user|
+      if session[:guest_user_id]
+        guest_user = GuestUser.find(session[:guest_user_id])
+        guest_calendars = Calendar.where(user_id: guest_user.id, user_type: 'GuestUser')
+
+        guest_calendars.each do |calendar|
+          calendar.update(user: user, user_type: 'User')
         end
+
+        guest_user.destroy
+        session.delete(:guest_user_id)
       end
     end
   end

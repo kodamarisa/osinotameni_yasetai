@@ -5,6 +5,7 @@ class CreateCalendars < ActiveRecord::Migration[6.1]
       t.string :image, null: true
       t.string :calendar_color, null: true
       t.string :calendar_type
+      t.references :user, polymorphic: true, index: true
 
       t.timestamps
     end

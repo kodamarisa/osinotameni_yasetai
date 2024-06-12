@@ -24,12 +24,17 @@ class CalendarsController < ApplicationController
   def create
     @calendar = Calendar.new(calendar_params)
     if @calendar.save
+      if current_guest
+        @calendar.calendar_users.create(user: current_guest)
+      end
+
       if params[:schedule].present?
         handle_successful_save
       else
         redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
       end
     else
+      flash[:alert] = @calendar.errors.full_messages.join(', ')
       render :new
     end
   end

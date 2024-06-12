@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :set_current_calendar
 
   helper_method :current_line_user, :line_user_signed_in?
+  helper_method :current_guest
   
   protected
 
@@ -46,5 +47,15 @@ class ApplicationController < ActionController::Base
 
   def current_calendar
     @current_calendar
+  end
+
+  def current_guest
+    if session[:guest_user_id]
+      GuestUser.find(session[:guest_user_id])
+    else
+      guest = GuestUser.create!
+      session[:guest_user_id] = guest.id
+      guest
+    end
   end
 end
