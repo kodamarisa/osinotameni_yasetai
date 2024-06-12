@@ -1,11 +1,10 @@
 class CreateCalendarUsers < ActiveRecord::Migration[6.1]
   def change
     create_table :calendar_users do |t|
-      t.references :calendar, polymorphic: true, null: false
+      t.references :calendar, null: false, foreign_key: true
       t.references :user, polymorphic: true, null: false
-      t.references :line_user, polymorphic: true, null: true
-
       t.timestamps
+      t.index [:calendar_id, :user_id], unique: true
     end
   end
 end

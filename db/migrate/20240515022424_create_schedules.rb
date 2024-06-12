@@ -5,6 +5,9 @@ class CreateSchedules < ActiveRecord::Migration[6.1]
       t.references :exercise, null: false, foreign_key: true
       t.date :date, null: false
 
+      t.integer :repetitions
+      t.integer :duration
+
       t.timestamps
     end
   end

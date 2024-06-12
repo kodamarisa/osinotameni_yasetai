@@ -6,7 +6,6 @@ class CreateExercises < ActiveRecord::Migration[6.1]
       t.integer :duration, null: true
       t.integer :difficulty, null: true
 
-
       t.timestamps
     end
   end

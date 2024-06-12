@@ -29,6 +29,8 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
+      ## Additional fields
+      t.string :name
 
       t.timestamps null: false
     end
@@ -39,4 +41,3 @@ class CreateUsers < ActiveRecord::Migration[6.1]
     # add_index :users, :unlock_token,         unique: true
   end
 end
-

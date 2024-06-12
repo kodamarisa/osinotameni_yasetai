@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_24_012957) do
+ActiveRecord::Schema.define(version: 2024_06_05_072804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,38 +25,36 @@ ActiveRecord::Schema.define(version: 2024_05_24_012957) do
   end
 
   create_table "calendar_users", force: :cascade do |t|
-    t.string "calendar_type", null: false
     t.bigint "calendar_id", null: false
     t.string "user_type", null: false
     t.bigint "user_id", null: false
-    t.string "line_user_type"
-    t.bigint "line_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["calendar_type", "calendar_id"], name: "index_calendar_users_on_calendar"
-    t.index ["line_user_type", "line_user_id"], name: "index_calendar_users_on_line_user"
+    t.index ["calendar_id", "user_id"], name: "index_calendar_users_on_calendar_id_and_user_id", unique: true
+    t.index ["calendar_id"], name: "index_calendar_users_on_calendar_id"
     t.index ["user_type", "user_id"], name: "index_calendar_users_on_user"
   end
 
   create_table "calendars", force: :cascade do |t|
     t.string "title", null: false
-    t.bigint "user_id"
     t.string "image"
     t.string "calendar_color"
+    t.string "calendar_type"
+    t.string "user_type"
+    t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "calendar_type"
-    t.index ["user_id"], name: "index_calendars_on_user_id"
+    t.index ["user_type", "user_id"], name: "index_calendars_on_user"
   end
 
   create_table "customizes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "line_user_id"
     t.bigint "calendar_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.string "calendar_color"
     t.string "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["calendar_id"], name: "index_customizes_on_calendar_id"
     t.index ["line_user_id"], name: "index_customizes_on_line_user_id"
     t.index ["user_id"], name: "index_customizes_on_user_id"
@@ -67,6 +65,11 @@ ActiveRecord::Schema.define(version: 2024_05_24_012957) do
     t.text "description"
     t.integer "duration"
     t.integer "difficulty"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "guest_users", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -86,10 +89,10 @@ ActiveRecord::Schema.define(version: 2024_05_24_012957) do
     t.bigint "calendar_id", null: false
     t.bigint "exercise_id", null: false
     t.date "date", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.integer "repetitions"
     t.integer "duration"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["calendar_id"], name: "index_schedules_on_calendar_id"
     t.index ["exercise_id"], name: "index_schedules_on_exercise_id"
   end
@@ -100,16 +103,16 @@ ActiveRecord::Schema.define(version: 2024_05_24_012957) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "bookmarks", "exercises", on_delete: :cascade
   add_foreign_key "bookmarks", "users", on_delete: :cascade
-  add_foreign_key "calendars", "users"
+  add_foreign_key "calendar_users", "calendars"
   add_foreign_key "customizes", "calendars"
   add_foreign_key "customizes", "line_users"
   add_foreign_key "customizes", "users"
