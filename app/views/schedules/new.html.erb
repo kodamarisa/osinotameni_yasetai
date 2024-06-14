@@ -1,27 +1,6 @@
-<h2>New Schedule for <%= params[:date] %></h2>
-
-<%= form_with(model: [@calendar, @schedule], local: true) do |form| %>
-  <div class="field">
-    <%= form.label :date %>
-    <%= form.date_field :date, value: params[:date] %>
+<div id="schedule-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="schedule-details"></div>
   </div>
-
-  <div class="field">
-    <%= form.label :exercise_id, "Exercise" %>
-    <%= form.collection_select :exercise_id, @exercises, :id, :name, prompt: "Choose an exercise" %>
-  </div>
-
-  <div class="field">
-    <%= form.label :repetitions %>
-    <%= form.number_field :repetitions %>
-  </div>
-
-  <div class="field">
-    <%= form.label :duration, "Duration (seconds)" %>
-    <%= form.number_field :duration %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>

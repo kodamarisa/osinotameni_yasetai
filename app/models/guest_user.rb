@@ -5,7 +5,7 @@ class GuestUser < ApplicationRecord
 
   private
 
-  def create_calendar
+  def create_guest_calendar
     create_calendar!(title: "Guest Calendar")
   end
 end

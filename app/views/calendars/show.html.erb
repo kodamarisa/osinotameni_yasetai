@@ -12,8 +12,8 @@
 
 <%= content_tag :div, class: "simple-calendar #{session[:calendar_color]}" do %>
   <%= month_calendar events: @events do |date, events| %>
-    <div class="calendar-date">
-      <%= link_to date.day, new_calendar_schedule_path(calendar_id: @calendar.id), class: 'date-link' %>
+    <div class="calendar-date" data-date="<%= date %>" data-calendar-id="<%= @calendar.id %>">
+      <%= link_to date.day, new_calendar_schedule_path(@calendar, date: date), class: 'date-link' %>
     </div>
     <div class="event-list">
       <% events.each do |event| %>
@@ -24,3 +24,10 @@
     </div>
   <% end %>
 <% end %>
+
+<div id="schedule-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="schedule-details"></div>
+  </div>
+</div>
