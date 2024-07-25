@@ -51,11 +51,17 @@ class ApplicationController < ActionController::Base
 
   def current_guest
     if session[:guest_user_id]
-      GuestUser.find(session[:guest_user_id])
-    else
-      guest = GuestUser.create!
-      session[:guest_user_id] = guest.id
-      guest
+      guest_user = GuestUser.find_by(id: session[:guest_user_id])
+      return guest_user if guest_user
     end
+
+    guest_user = GuestUser.create!
+    session[:guest_user_id] = guest_user.id
+    guest_user
+  rescue ActiveRecord::RecordNotFound
+    session.delete(:guest_user_id)
+    guest_user = GuestUser.create!
+    session[:guest_user_id] = guest_user.id
+    guest_user
   end
 end
