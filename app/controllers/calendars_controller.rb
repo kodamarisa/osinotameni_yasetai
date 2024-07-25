@@ -23,10 +23,16 @@ class CalendarsController < ApplicationController
 
   def create
     @calendar = Calendar.new(calendar_params)
+    @calendar.user = [current_user, current_guest, current_line_user].find(&:itself)
+
+    if @calendar.user.nil?
+      flash[:alert] = 'User must exist'
+      render :new
+      return
+    end
+
     if @calendar.save
-      if current_guest
-        @calendar.calendar_users.create(user: current_guest)
-      end
+        @calendar.calendar_users.create(user: current_guest) if current_guest && @calendar.save
 
       if params[:schedule].present?
         handle_successful_save
@@ -34,7 +40,9 @@ class CalendarsController < ApplicationController
         redirect_to calendar_path(@calendar), notice: 'Calendar was successfully created.'
       end
     else
-      flash[:alert] = @calendar.errors.full_messages.join(', ')
+      error_messages = @calendar.errors.full_messages.join(', ')
+      Rails.logger.error error_messages
+      flash[:alert] = error_messages
       render :new
     end
   end
