@@ -16,4 +16,5 @@
  *= require calendars
  *= require_tree .
  *= require_self
+ *= require exercise_cards
  */

@@ -1,7 +1,14 @@
-<tr>
-  <td><%= exercise.name %></td>
-  <td><%= exercise.description %></td>
-  <td><%= exercise.duration %></td>
-  <td><%= exercise.difficulty %></td>
-  <td><%= link_to 'View', exercise_path(exercise) %></td>
-</tr>
+<div class="col-sm-12 col-lg-4 mb-3">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">
+        <%= link_to exercise.name, exercise_path(exercise) %>
+      </h4>
+      <p class="card-text">
+        <strong>Difficulty:</strong> <%= exercise.difficulty %><br>
+        <strong>Duration:</strong> <%= exercise.is_cardio? ? "#{exercise.minimum_reps_or_distance} m" : "#{exercise.minimum_reps_or_distance} reps" %>
+      </p>
+      <%= link_to 'Add to Schedule', new_calendar_schedule_path(calendar_id: @calendar.id, exercise_id: exercise.id), class: "btn btn-success" %>
+    </div>
+  </div>
+</div>

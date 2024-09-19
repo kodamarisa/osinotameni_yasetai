@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_05_072804) do
+ActiveRecord::Schema.define(version: 2024_09_18_051312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,9 @@ ActiveRecord::Schema.define(version: 2024_06_05_072804) do
     t.integer "difficulty"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "minimum_reps_or_distance"
+    t.string "target_muscles"
+    t.boolean "is_cardio", default: false
   end
 
   create_table "guest_users", force: :cascade do |t|
@@ -93,6 +96,7 @@ ActiveRecord::Schema.define(version: 2024_06_05_072804) do
     t.integer "duration"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "distance"
     t.index ["calendar_id"], name: "index_schedules_on_calendar_id"
     t.index ["exercise_id"], name: "index_schedules_on_exercise_id"
   end

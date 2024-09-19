@@ -6,6 +6,7 @@ class SchedulesController < ApplicationController
     @calendar = Calendar.find(params[:calendar_id])
     @schedule = @calendar.schedules.build
     @exercises = Exercise.all
+    @selected_exercise = Exercise.find(params[:exercise_id]) if params[:exercise_id].present?
   end
 
   def create
@@ -13,7 +14,10 @@ class SchedulesController < ApplicationController
     @schedule = @calendar.schedules.build(schedule_params)
 
     if @schedule.save
-      redirect_to calendar_path(@calendar), notice: 'Schedule was successfully created.'
+      respond_to do |format|
+        format.html { redirect_to calendar_path(@calendar), notice: 'Schedule was successfully created.' }
+        format.js   # Use JavaScript to handle modal closing and calendar updating
+      end
     else
       @exercises = Exercise.all
       render :new
