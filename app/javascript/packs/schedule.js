@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("schedule-modal");
+  const modal = document.getElementById("scheduleModal");
   const span = document.getElementsByClassName("close")[0];
 
   document.querySelectorAll(".calendar-date").forEach(element => {

@@ -1,9 +1,12 @@
 <div class="exercise-detail">
   <h1><%= @exercise.name %></h1>
-  <p><strong>Description:</strong> <%= @exercise.description %></p>
-  <p><strong>Duration:</strong> <%= @exercise.duration %> minutes</p>
-  <p><strong>Difficulty:</strong> <%= @exercise.difficulty %></p>
+  <p><strong>Difficulty:</strong> <%= @exercise.difficulty %> / 5</p>
+  <p><strong>Minimum Reps/Distance:</strong> <%= @exercise.minimum_reps_or_distance %> <%= @exercise.is_cardio? ? 'm' : 'reps' %></p>
+  <p><strong>Target Muscles:</strong> <%= @exercise.target_muscles %></p>
+  <p><strong>Description:</strong> <%= @exercise.description %></p> <!-- ここに説明文を表示 -->
+
   <%= link_to 'Back to Exercise List', exercises_path, class: "btn btn-primary" %>
+  <%= button_to 'Add to Schedule', new_calendar_schedule_path(calendar_id: @calendar.id, exercise_id: @exercise.id), method: :get, class: "btn btn-success" %>
 
   <% if user_signed_in? %>
     <% if current_user && current_user.bookmarks.exists?(exercise: @exercise) %>

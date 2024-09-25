@@ -1,27 +1,36 @@
-<h2>New Schedule for <%= params[:date] %></h2>
+<div class="modal" id="scheduleModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>New Schedule for <%= @calendar.title %></h2>
 
-<%= form_with(model: [@calendar, @schedule], local: true) do |form| %>
-  <div class="field">
-    <%= form.label :date %>
-    <%= form.date_field :date, value: params[:date] %>
-  </div>
+    <%= form_with(model: [@calendar, @schedule], local: true) do |form| %>
+      <div class="field">
+        <%= form.label :date %>
+        <%= form.date_field :date, value: params[:date] %>
+      </div>
 
-  <div class="field">
-    <%= form.label :exercise_id, "Exercise" %>
-    <%= form.collection_select :exercise_id, @exercises, :id, :name, prompt: "Choose an exercise" %>
-  </div>
+      <div class="field">
+        <%= form.label :exercise_id, "Exercise" %>
+        <%= form.collection_select :exercise_id, @exercises, :id, :name, prompt: "Choose an exercise", selected: @selected_exercise&.id %>
+      </div>
 
-  <div class="field">
-    <%= form.label :repetitions %>
-    <%= form.number_field :repetitions %>
-  </div>
+      <div class="field">
+        <%= form.label :repetitions, "Repetitions/Distance" %>
+        <%= form.number_field :repetitions, value: @selected_exercise&.minimum_reps_or_distance %>
+      </div>
 
-  <div class="field">
-    <%= form.label :duration, "Duration (seconds)" %>
-    <%= form.number_field :duration %>
+      <div class="actions">
+        <%= form.submit %>
+      </div>
+    <% end %>
   </div>
+</div>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+<script>
+  // Modal opening script
+  var modal = document.getElementById('scheduleModal');
+  var closeBtn = document.getElementsByClassName('close')[0];
+  closeBtn.onclick = function() {
+    modal.style.display = "none";
+  }
+</script>

@@ -1,23 +1,14 @@
 <h1>Exercise List</h1>
 
 <%= search_form_for @q, url: exercises_path, method: :get, local: true do |f| %>
-  <div data-controller="autocomplete" data-autocomplete-url-value="<%= autocomplete_exercises_path %>">
-    <%= f.search_field :name_cont, placeholder: "Search exercises...", class: "form-control", data: { autocomplete_target: "input" } %>
-    <button type="submit" class="btn btn-primary">Search</button>
+  <div class="input-group mb-3">
+    <%= f.search_field :description_or_target_muscles_cont, placeholder: "Search by description or target muscles", class: "form-control" %>
+    <div class="input-group-append">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
   </div>
 <% end %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Duration</th>
-      <th>Difficulty</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render partial: 'exercise_row', collection: @exercises, as: :exercise %>
-  </tbody>
-</table>
+<div class="row">
+  <%= render partial: 'exercise_row', collection: @exercises, as: :exercise %>
+</div>
