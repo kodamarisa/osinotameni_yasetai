@@ -6,13 +6,13 @@ class ExercisesController < ApplicationController
       redirect_to calendars_path
       return
     end
-
+  
     @q = Exercise.ransack(search_params)
     Rails.logger.debug "Search Parameters: #{search_params.inspect}"
     Rails.logger.debug "Query Result: #{@q.result.to_sql}"
-
+  
     @exercises = @q.result
-  end
+  end  
 
   def show
     @calendar = Calendar.find_by(id: session[:current_calendar_id]) # カレンダーをセッションから取得
@@ -27,8 +27,6 @@ class ExercisesController < ApplicationController
   private
 
   def search_params
-    params.fetch(:q, {}).merge(
-      "description_or_target_muscles_cont" => params.dig(:q, :cont)
-    )
-  end
+    params.fetch(:q, {}).permit(:description_or_target_muscles_cont)
+  end  
 end
