@@ -1,26 +1,42 @@
 class BookmarksController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user_or_line_user!
   before_action :set_exercise, only: [:create]
   before_action :set_bookmark, only: [:destroy]
 
   def index
-    @bookmarks = current_user.bookmarks.includes(:exercise)
+    @bookmarks = current_user_or_line_user.bookmarks.includes(:exercise)
   end
 
   def create
-    @bookmark = current_user.bookmarks.new(exercise: @exercise)
-
-    if @bookmark.save
-      redirect_to @exercise, notice: 'Exercise was successfully bookmarked.'
+    # 既にブックマークが存在するか確認
+    if current_user_or_line_user.bookmarks.exists?(exercise_id: params[:exercise_id])
+      respond_to do |format|
+        format.js { render partial: 'already_bookmarked' } # 既にブックマークされている場合の処理
+        format.json { render json: { status: 'already_bookmarked' }, status: :unprocessable_entity }
+      end
     else
-      redirect_to @exercise, alert: 'Unable to bookmark exercise.'
+      @bookmark = current_user_or_line_user.bookmarks.create(exercise_id: params[:exercise_id])
+      respond_to do |format|
+        format.html { redirect_back(fallback_location: root_path) }
+        format.js   # JSレスポンスを追加
+        format.json { render json: { status: 'created' } }
+      end
     end
-  end
+  end  
 
   def destroy
-    @bookmark.destroy
-    redirect_back fallback_location: root_path, notice: 'Bookmark removed successfully'
-  end
+    @bookmark = current_user_or_line_user.bookmarks.find_by(exercise_id: params[:exercise_id])
+    if @bookmark.present?
+      @bookmark.destroy
+      respond_to do |format|
+        format.html { redirect_back(fallback_location: root_path) }
+        format.js   # JSレスポンスを追加
+        format.json { render json: { status: 'deleted' } }
+      end
+    else
+      redirect_to bookmarks_path, alert: 'Bookmark not found.'
+    end
+  end  
 
   private
 
@@ -31,8 +47,12 @@ class BookmarksController < ApplicationController
   end
 
   def set_bookmark
-    @bookmark = current_user.bookmarks.find(params[:id])
+    @bookmark = current_user_or_line_user.bookmarks.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to bookmarks_path, alert: 'Bookmark not found.'
+  end
+
+  def current_user_or_line_user
+    current_user || current_line_user
   end
 end

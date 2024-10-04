@@ -58,7 +58,8 @@ class ApplicationController < ActionController::Base
     guest_user = GuestUser.create!
     session[:guest_user_id] = guest_user.id
     guest_user
-  rescue ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.error "Guest user not found: #{e.message}"
     session.delete(:guest_user_id)
     guest_user = GuestUser.create!
     session[:guest_user_id] = guest_user.id

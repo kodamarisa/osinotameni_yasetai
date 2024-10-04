@@ -1,4 +1,4 @@
-<div class="col-sm-12 col-lg-4 mb-3">
+<div class="col-sm-12 col-lg-4 mb-3 exercise-card-<%= exercise.id %>">
   <div class="card">
     <div class="card-body">
       <h4 class="card-title d-flex justify-content-between align-items-center">
@@ -9,7 +9,6 @@
         <strong>Difficulty:</strong> <%= exercise.difficulty %><br>
         <strong>Duration:</strong> <%= exercise.is_cardio? ? "#{exercise.minimum_reps_or_distance} m" : "#{exercise.minimum_reps_or_distance} reps" %>
       </p>
-      <%= link_to 'Add to Schedule', new_calendar_schedule_path(calendar_id: calendar_id, exercise_id: exercise.id, date: date), class: "btn btn-success" %>
     </div>
   </div>
 </div>
