@@ -13,7 +13,7 @@ class CalendarsController < ApplicationController
   def create
     Rails.logger.debug "Create action called"
     @calendar = Calendar.new(calendar_params)
-    @calendar.user = [current_user, current_guest, current_line_user].find(&:itself)
+    @calendar.user ||= [current_user, current_guest, current_line_user].find(&:itself)
 
     if @calendar.user.nil?
       flash[:alert] = 'User must exist'
@@ -41,11 +41,17 @@ class CalendarsController < ApplicationController
   end
 
   def show
+    @calendar = Calendar.find_by(id: params[:id])
     if @calendar
+      # カレンダーの表示権限を確認
       if authorized_to_view?(@calendar)
         session[:current_calendar_id] = @calendar.id
         @customize = Customize.find_by(calendar_id: @calendar.id)
         @events = @calendar.schedules.includes(:exercise)
+  
+        # @selected_dateを設定
+        @selected_date = params[:date] ? Date.parse(params[:date]) : Date.today
+        @schedules = @calendar.schedules.where(date: @selected_date) # 日付に基づくスケジュール表示
       else
         flash[:alert] = 'You are not authorized to view this calendar.'
         redirect_to calendars_path
@@ -55,6 +61,7 @@ class CalendarsController < ApplicationController
     end
     expires_now
   end
+  
 
   def edit
   end

@@ -4,36 +4,55 @@ class SchedulesController < ApplicationController
 
   def new
     @calendar = Calendar.find(params[:calendar_id])
-    @schedule = @calendar.schedules.build
+    @exercise = Exercise.find(params[:exercise_id]) # 引数からExerciseを取得
+    @schedule = @calendar.schedules.build(exercise: @exercise) # @scheduleを初期化
+  
+    # 全てのExerciseを取得
     @exercises = Exercise.all
-    @selected_exercise = Exercise.find(params[:exercise_id]) if params[:exercise_id].present?
-  end
+    @selected_exercise = @exercise # 選択中のエクササイズを設定
+  
+    # 追加: 選択した日付を設定
+    @selected_date = params[:date] ? Date.parse(params[:date]) : Date.today
+  end  
 
   def create
-    @schedule = Calendar.find(params[:calendar_id])
     @schedule = @calendar.schedules.build(schedule_params)
-
+    
     if @schedule.save
       respond_to do |format|
-        format.html { redirect_to calendar_path(@calendar), notice: 'Schedule was successfully created.' }
-        format.js   # Use JavaScript to handle modal closing and calendar updating
+        format.html { redirect_to calendar_path(@calendar), notice: 'スケジュールが正常に作成されました。' }
+        format.js   # JavaScriptを使用してカレンダーを更新
       end
     else
       @exercises = Exercise.all
       render :new
     end
-  end
+  end  
 
   def show
   end
 
+  def index
+    @date = params[:date]
+    @calendar = Calendar.find(params[:calendar_id])
+    @schedules = @calendar.schedules.where(date: @date)
+  
+    respond_to do |format|
+      format.html { render partial: 'schedules/schedule_details', locals: { schedules: @schedules, date: @date } }
+      format.js   # JavaScriptでのリクエストに対応
+    end
+  end  
+
   def edit
     @exercises = Exercise.all
-  end
+  end  
 
   def update
     if @schedule.update(schedule_params)
-      redirect_to calendar_path(@calendar), notice: 'Schedule was successfully updated.'
+      respond_to do |format|
+        format.html { redirect_to calendar_path(@calendar), notice: 'スケジュールが正常に更新されました。' }
+        format.js   # JavaScriptを使用してカレンダーを更新
+      end
     else
       @exercises = Exercise.all
       render :edit
@@ -42,8 +61,12 @@ class SchedulesController < ApplicationController
 
   def destroy
     @schedule.destroy
-    redirect_to calendar_path(@calendar), notice: 'Schedule was successfully deleted.'
+    respond_to do |format|
+      format.html { redirect_to calendar_path(@calendar), notice: 'スケジュールが正常に削除されました。' }
+      format.js   # JavaScriptを使用してカレンダーを更新
+    end
   end
+  
 
   private
 
@@ -51,7 +74,11 @@ class SchedulesController < ApplicationController
     @calendar = Calendar.find(params[:calendar_id])
   end
 
-  def schedule_params
-    params.require(:schedule).permit(:date, :exercise_id, :repetitions, :duration)
+  def set_schedule
+    @schedule = @calendar.schedules.find(params[:id])
   end
+
+  def schedule_params
+    params.require(:schedule).permit(:exercise_id, :repetitions, :sets, :date)
+  end  
 end

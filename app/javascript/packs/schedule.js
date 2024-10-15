@@ -1,28 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("scheduleModal");
-  const span = document.getElementsByClassName("close")[0];
-
-  document.querySelectorAll(".calendar-date").forEach(element => {
+  document.querySelectorAll(".calendar-date").forEach((element) => {
     element.addEventListener("click", (event) => {
       event.preventDefault();
       const date = event.currentTarget.dataset.date;
       const calendarId = event.currentTarget.dataset.calendarId;
-      fetch(`/calendars/${calendarId}/schedules/new?date=${date}`) // ルーティングに合わせてURLを変更
-        .then(response => response.text())
-        .then(html => {
+
+      fetch(`/calendars/${calendarId}/schedules?date=${date}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to load schedule details.');
+          }
+          return response.text();
+        })
+        .then((html) => {
           document.getElementById("schedule-details").innerHTML = html;
-          modal.style.display = "block";
+          const modal = new bootstrap.Modal(document.getElementById("scheduleModal"));
+          modal.show();
+        })
+        .catch((error) => {
+          console.error('Error loading schedule details:', error);
         });
     });
   });
 
-  span.onclick = function() {
-    modal.style.display = "none";
-  }
-
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
+  // 追加ボタンの処理
+  document.getElementById("add-schedule-btn")?.addEventListener("click", () => {
+    window.location.href = '/exercises'; // エクササイズ一覧へリダイレクト
+  });
 });
