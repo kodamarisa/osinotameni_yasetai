@@ -9,5 +9,8 @@
   <p><strong>Description:</strong> <%= @exercise.description %></p>
 
   <%= link_to 'Back to Exercise List', exercises_path, class: "btn btn-primary" %>
-  <%= link_to 'Add to Schedule', new_calendar_schedule_path(calendar_id: @calendar.id, exercise_id: @exercise.id, date: params[:date]), class: "btn btn-success", data: { toggle: "modal", target: "#scheduleModal" } %>
+  <%= link_to 'Add to Schedule', '#', class: "btn btn-success", data: { toggle: "modal", target: "#scheduleModal" } %>
+
+  <!-- モーダル部分を読み込む -->
+  <%= render 'schedule_modal', exercise: @exercise %>
 </div>

@@ -9,7 +9,9 @@
         <strong>Difficulty:</strong> <%= exercise.difficulty %><br>
         <strong>Duration:</strong> <%= exercise.is_cardio? ? "#{exercise.minimum_reps_or_distance} m" : "#{exercise.minimum_reps_or_distance} reps" %>
       </p>
-      <%= link_to 'Add to Schedule', new_calendar_schedule_path(calendar_id: calendar_id, exercise_id: exercise.id, date: date), class: "btn btn-success" %>
+      <%= link_to 'Add to Schedule', '#', class: "btn btn-success", data: { toggle: "modal", target: "#scheduleModal", exercise_id: exercise.id } %>
     </div>
   </div>
+  <!-- モーダル部分を読み込む -->
+  <%= render 'schedule_modal', exercise: exercise %>
 </div>

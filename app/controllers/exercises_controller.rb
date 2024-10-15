@@ -1,6 +1,6 @@
 class ExercisesController < ApplicationController
   def index
-    @calendar = Calendar.find_by(id: session[:current_calendar_id]) # カレンダーをセッションから取得
+    @calendar = Calendar.find_by(id: session[:current_calendar_id])
     unless @calendar
       flash[:alert] = 'カレンダーが見つかりません。'
       redirect_to calendars_path
@@ -8,14 +8,11 @@ class ExercisesController < ApplicationController
     end
   
     @q = Exercise.ransack(search_params)
-    Rails.logger.debug "Search Parameters: #{search_params.inspect}"
-    Rails.logger.debug "Query Result: #{@q.result.to_sql}"
-  
     @exercises = @q.result
   end  
 
   def show
-    @calendar = Calendar.find_by(id: session[:current_calendar_id]) # カレンダーをセッションから取得
+    @calendar = Calendar.find_by(id: session[:current_calendar_id])
     @exercise = Exercise.find(params[:id])
   end
 
