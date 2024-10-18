@@ -5,7 +5,7 @@
 <% if schedules.any? %>
   <% schedules.each do |schedule| %>
     <div class="schedule-item">
-      <p><%= schedule.exercise.name %> | <%= schedule.repetitions %> 回 × <%= schedule.sets %> セット</p>
+      <p><%= schedule.exercise.name %> <%= schedule.repetitions %> 回 × <%= schedule.sets %> セット</p>
       <button class="btn btn-sm btn-outline-primary">編集</button>
       <button class="btn btn-sm btn-outline-danger">削除</button>
     </div>

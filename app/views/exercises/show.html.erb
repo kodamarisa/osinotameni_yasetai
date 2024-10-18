@@ -9,7 +9,7 @@
   <p><strong>Description:</strong> <%= @exercise.description %></p>
 
   <%= link_to 'Back to Exercise List', exercises_path, class: "btn btn-primary" %>
-  <%= link_to 'Add to Schedule', '#', class: "btn btn-success", data: { toggle: "modal", target: "#scheduleModal" } %>
+  <%= link_to 'Add to Schedule', '#', class: "btn btn-success", data: { bs_toggle: "modal", bs_target: "#scheduleModal" } %>
 
   <!-- モーダル部分を読み込む -->
   <%= render 'schedule_modal', exercise: @exercise %>
