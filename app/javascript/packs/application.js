@@ -10,9 +10,12 @@ import "channels";
 import "controllers";
 import "./sidebar";
 import "./schedule";
+import "./exercise_modal";
 import "./custom_calendar";
+
+// Import Bootstrap
+import "bootstrap";
 
 Rails.start();
 Turbolinks.start();
 ActiveStorage.start();
-  

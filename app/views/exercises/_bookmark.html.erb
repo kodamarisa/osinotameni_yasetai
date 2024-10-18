@@ -1,0 +1,33 @@
+<% if user_signed_in? %>
+  <% if current_user&.bookmarks&.exists?(exercise: exercise) %> 
+    <%= link_to '<i class="fas fa-star"></i>'.html_safe, 
+                exercise_bookmark_path(exercise, current_user.bookmarks.find_by(exercise: exercise)), 
+                method: :delete, 
+                remote: true, 
+                id: "bookmark-button-#{exercise.id}", 
+                class: "bookmark-btn btn btn-warning" %>
+  <% else %>
+    <%= link_to '<i class="far fa-star"></i>'.html_safe, 
+                exercise_bookmarks_path(exercise), 
+                method: :post, 
+                remote: true, 
+                id: "bookmark-button-#{exercise.id}", 
+                class: "bookmark-btn btn btn-warning" %>
+  <% end %>
+<% elsif line_user_signed_in? %>
+  <% if line_user&.bookmarks&.exists?(exercise: exercise) %>
+    <%= link_to '<i class="fas fa-star"></i>'.html_safe, 
+                exercise_bookmark_path(exercise, line_user.bookmarks.find_by(exercise: exercise)), 
+                method: :delete, 
+                remote: true, 
+                id: "bookmark-button-#{exercise.id}", 
+                class: "bookmark-btn btn btn-warning" %>
+  <% else %>
+    <%= link_to '<i class="far fa-star"></i>'.html_safe, 
+                exercise_bookmarks_path(exercise), 
+                method: :post, 
+                remote: true, 
+                id: "bookmark-button-#{exercise.id}", 
+                class: "bookmark-btn btn btn-warning" %>
+  <% end %>
+<% end %>

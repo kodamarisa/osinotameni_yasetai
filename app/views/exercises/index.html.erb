@@ -10,5 +10,5 @@
 <% end %>
 
 <div class="row">
-  <%= render partial: 'exercise_row', collection: @exercises, as: :exercise %>
+  <%= render partial: 'exercise_row', collection: @exercises, as: :exercise, locals: { calendar_id: @calendar.id, date: @selected_date } %>
 </div>

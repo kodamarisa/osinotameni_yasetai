@@ -1,19 +1,7 @@
-<div class="calendar-header">
-  <h1>Calendars#show</h1>
-</div>
-
-<div class="calendar-header">
-  <% if @customize.present? && @customize.image.present? %>
-    <%= image_tag @customize.image.url, class: 'calendar-image' %>
-  <% else %>
-    <p>No image available</p>
-  <% end %>
-</div>
-
 <%= content_tag :div, class: "simple-calendar #{session[:calendar_color]}" do %>
   <%= month_calendar events: @events do |date, events| %>
-    <div class="calendar-date">
-      <%= link_to date.day, new_calendar_schedule_path(calendar_id: @calendar.id), class: 'date-link' %>
+    <div class="calendar-date" data-date="<%= date %>" data-calendar-id="<%= @calendar.id %>">
+    <%= link_to date.day, "#", class: 'date-link', data: { bs_toggle: 'modal', bs_target: '#scheduleModal' } %>
     </div>
     <div class="event-list">
       <% events.each do |event| %>
@@ -24,3 +12,22 @@
     </div>
   <% end %>
 <% end %>
+
+<div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scheduleModalLabel">スケジュール</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="schedule-details">
+        <!-- ここにスケジュール詳細が表示される -->
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>

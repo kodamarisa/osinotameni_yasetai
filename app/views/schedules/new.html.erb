@@ -1,36 +1,27 @@
-<div class="modal" id="scheduleModal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>New Schedule for <%= @calendar.title %></h2>
-
-    <%= form_with(model: [@calendar, @schedule], local: true) do |form| %>
-      <div class="field">
-        <%= form.label :date %>
-        <%= form.date_field :date, value: params[:date] %>
-      </div>
-
-      <div class="field">
-        <%= form.label :exercise_id, "Exercise" %>
-        <%= form.collection_select :exercise_id, @exercises, :id, :name, prompt: "Choose an exercise", selected: @selected_exercise&.id %>
-      </div>
-
-      <div class="field">
-        <%= form.label :repetitions, "Repetitions/Distance" %>
-        <%= form.number_field :repetitions, value: @selected_exercise&.minimum_reps_or_distance %>
-      </div>
-
-      <div class="actions">
-        <%= form.submit %>
-      </div>
-    <% end %>
-  </div>
+<div class="modal-header">
+  <h5 class="modal-title"><%= @selected_date.strftime("%m/%d (%a)") if @selected_date %></h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-
-<script>
-  // Modal opening script
-  var modal = document.getElementById('scheduleModal');
-  var closeBtn = document.getElementsByClassName('close')[0];
-  closeBtn.onclick = function() {
-    modal.style.display = "none";
-  }
-</script>
+<div class="modal-body">
+  <% if @schedules.empty? %>
+    <p>No exercises scheduled for this day.</p>
+    <button class="btn btn-primary" onclick="window.location.href='/exercises'">Add</button>
+  <% else %>
+    <table class="table">
+      <% @schedules.each do |schedule| %>
+        <tr>
+          <td><%= schedule.exercise.name %></td>
+          <td><%= schedule.repetitions %> reps</td>
+          <td><%= schedule.sets %> sets</td>
+          <td>
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal-<%= schedule.id %>">Edit</button>
+            <button class="btn btn-danger" data-bs-dismiss="modal" data-schedule-id="<%= schedule.id %>">Delete</button>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <% if @schedules.size < 3 %>
+      <button class="btn btn-primary" onclick="window.location.href='/exercises'">Add</button>
+    <% end %>
+  <% end %>
+</div>

@@ -1,0 +1,27 @@
+/*
+ * This is a manifest file that'll be compiled into application.scss, which will include all the files
+ * listed below.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last import statement.
+ * It is generally better to create a new file per style scope.
+ */
+
+// Import other styles first
+@import "header"; // ここにヘッダーのスタイルを追加
+@import "calendar_header";
+@import "sidebar";
+@import "simple_calendar";
+@import "calendars";
+@import "exercise_cards";
+@import "schedules";
+
+// Import Font Awesome last
+@import "font-awesome-sprockets";
+@import "font-awesome";
+
+// Import Bootstrap
+@import "bootstrap/scss/bootstrap";
+
+// Remove the @import "tree"; line

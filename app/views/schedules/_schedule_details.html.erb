@@ -1,0 +1,21 @@
+<div class="schedule-header">
+  <h5><%= date %></h5>
+</div>
+
+<% if schedules.any? %>
+  <% schedules.each do |schedule| %>
+    <div class="schedule-item">
+      <p><%= schedule.exercise.name %> <%= schedule.repetitions %> 回 × <%= schedule.sets %> セット</p>
+      <button class="btn btn-sm btn-outline-primary">編集</button>
+      <button class="btn btn-sm btn-outline-danger">削除</button>
+    </div>
+  <% end %>
+<% else %>
+  <p>この日にスケジュールはありません。</p>
+<% end %>
+
+<% if schedules.count < 3 %>
+  <button class="btn btn-primary" id="add-schedule-btn">追加</button>
+<% else %>
+  <p>これ以上スケジュールを追加できません。</p>
+<% end %>
