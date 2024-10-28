@@ -47,7 +47,19 @@ class SchedulesController < ApplicationController
 
   def update
     logger.debug "UPDATE: Schedule ID: #{@schedule.id}, Params: #{params.inspect}"
-
+  
+    # exercise_idが空でないことを確認
+    if params[:schedule][:exercise_id].blank?
+      logger.error "Exercise ID is missing."
+      @exercises = Exercise.all  # エクササイズのリストを再取得
+      respond_to do |format|
+        format.html { render :edit, alert: 'エクササイズを選択してください。' }
+        format.js { render json: { status: 'error', errors: ['エクササイズを選択してください。'] }, status: :unprocessable_entity }
+      end
+      return  # ここで処理を終了
+    end
+  
+    # スケジュールを更新
     if @schedule.update(schedule_params)
       logger.info "Schedule updated: #{@schedule.inspect}"
       respond_to do |format|
@@ -57,7 +69,10 @@ class SchedulesController < ApplicationController
     else
       logger.error "Failed to update schedule: #{@schedule.errors.full_messages}"
       @exercises = Exercise.all
-      render :edit
+      respond_to do |format|
+        format.html { render :edit }
+        format.js { render json: { status: 'error', errors: @schedule.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 

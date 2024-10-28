@@ -1,7 +1,7 @@
 <%= content_tag :div, class: "simple-calendar #{session[:calendar_color]}" do %>
   <%= month_calendar events: @events do |date, events| %>
     <div class="calendar-date" data-date="<%= date %>" data-calendar-id="<%= @calendar.id %>">
-    <%= link_to date.day, "#", class: 'date-link', data: { bs_toggle: 'modal', bs_target: '#scheduleModal' } %>
+      <%= link_to date.day, "#", class: 'date-link', data: { bs_toggle: 'modal', bs_target: '#scheduleModal' } %>
     </div>
     <div class="event-list">
       <% events.each do |event| %>
@@ -13,7 +13,8 @@
   <% end %>
 <% end %>
 
-<div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+<!-- スケジュールモーダル -->
+<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -23,11 +24,14 @@
         </button>
       </div>
       <div class="modal-body" id="schedule-details">
-        <!-- ここにスケジュール詳細が表示される -->
+        <!-- スケジュール詳細がここに表示されます -->
       </div>
       <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- 編集モーダル -->
+<%= render 'schedules/edit_modal' %>
