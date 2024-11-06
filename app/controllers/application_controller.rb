@@ -29,18 +29,31 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user_or_line_user!
+    Rails.logger.debug "Current User: #{current_user.inspect}"
+    Rails.logger.debug "Current Line User: #{current_line_user.inspect}"
     unless current_user || current_line_user
       redirect_to root_path, alert: 'You must be logged in to access this section.'
     end
   end
 
+  def current_user_or_line_user
+    current_user || current_line_user
+  end
+
   def set_current_calendar
-    if params[:calendar_id].present?
-      @current_calendar = Calendar.find_by(id: params[:calendar_id])
-    elsif session[:current_calendar_id].present?
-      @current_calendar = Calendar.find_by(id: session[:current_calendar_id])
+    user = current_user_or_line_user || current_guest
+  
+    if session[:current_calendar_id].present?
+      @current_calendar = Calendar.find_by(id: session[:current_calendar_id], user_id: user.id)
     else
-      @current_calendar = Calendar.create(title: "Default Calendar")
+      existing_calendar = Calendar.find_by(user_id: user.id, user_type: user.class.name)
+      
+      if existing_calendar
+        @current_calendar = existing_calendar
+      else
+        @current_calendar = Calendar.create(title: "Default Calendar", user: user)
+      end
+  
       session[:current_calendar_id] = @current_calendar.id
     end
   end

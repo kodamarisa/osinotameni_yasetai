@@ -8,9 +8,22 @@ class LineUsersController < ApplicationController
   def create
     @line_user = LineUser.new(line_user_params)
     if @line_user.save
-      if session[:current_calendar_id].present?
-        calendar = Calendar.find(session[:current_calendar_id])
-        calendar.users << @line_user unless calendar.users.include?(@line_user)
+      if session[:guest_user_id]
+        guest_user = GuestUser.find(session[:guest_user_id])
+        guest_calendar = Calendar.find_by(user_id: guest_user.id, user_type: 'GuestUser')
+        
+        line_user_calendar = Calendar.find_by(user_id: @line_user.id, user_type: 'LineUser')
+  
+        # 既にLineUserにカレンダーがある場合、ゲストカレンダーは削除
+        if line_user_calendar.nil? && guest_calendar
+          guest_calendar.update(user: @line_user, user_type: 'LineUser')
+        else
+          guest_calendar&.destroy
+        end
+  
+        # ゲストユーザー削除
+        guest_user.destroy
+        session.delete(:guest_user_id)
       end
       redirect_to line_user_path(@line_user), notice: 'Line User was successfully created.'
     else

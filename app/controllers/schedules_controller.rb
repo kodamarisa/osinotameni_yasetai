@@ -17,6 +17,12 @@ class SchedulesController < ApplicationController
   def create
     logger.debug "CREATE: Params: #{params.inspect}"
 
+    selected_date = params[:schedule][:date]
+    if @calendar.schedules.where(date: selected_date).count >= 3
+      flash[:alert] = 'その日にはこれ以上設定できません。'
+      redirect_to exercises_path and return
+    end
+
     @schedule = @calendar.schedules.build(schedule_params)
     if @schedule.save
       logger.info "Schedule successfully created: #{@schedule.inspect}"
@@ -77,12 +83,12 @@ class SchedulesController < ApplicationController
   end
 
   def destroy
-    logger.info "DESTROY: Schedule ID: #{@schedule.id}"
-
-    @schedule.destroy
-    respond_to do |format|
-      format.html { redirect_to calendar_path(@calendar), notice: 'スケジュールが正常に削除されました。' }
-      format.js
+    if @schedule.destroy
+      logger.info "Schedule successfully deleted: #{@schedule.id}"
+      render json: { status: 'success' }, status: :ok
+    else
+      logger.error "Failed to delete schedule: #{@schedule.errors.full_messages}"
+      render json: { status: 'error', errors: @schedule.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

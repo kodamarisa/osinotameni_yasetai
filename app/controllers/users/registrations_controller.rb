@@ -21,23 +21,24 @@ class Users::RegistrationsController < Devise::RegistrationsController
       if session[:guest_user_id]
         guest_user = GuestUser.find(session[:guest_user_id])
   
-        # ゲストユーザーに関連するカレンダーを取得
-        guest_calendars = Calendar.where(user_id: guest_user.id, user_type: 'GuestUser')
-  
-        guest_calendars.each do |calendar|
-          # カレンダーの所有者を更新
-          calendar.update(user: user, user_type: 'User')
-  
-          # ゲストユーザーのカレンダー関連付け（polymorphic関連）も修正する
-          CalendarUser.where(user_id: guest_user.id, user_type: 'GuestUser').update_all(user_id: user.id, user_type: 'User')
+        # ユーザーに既存のカレンダーがあるかチェックし、なければゲストのカレンダーを引き継ぐ
+        user_calendar = Calendar.find_by(user_id: user.id, user_type: 'User')
+        guest_calendar = Calendar.find_by(user_id: guest_user.id, user_type: 'GuestUser')
+        
+        if user_calendar.nil? && guest_calendar
+          # ゲストカレンダーをユーザーに関連付ける
+          guest_calendar.update(user: user, user_type: 'User')
+        else
+          # 既存のカレンダーがあれば、ゲストカレンダーは削除
+          guest_calendar&.destroy
         end
   
-        # ゲストユーザーを削除し、セッションからも削除
+        # ゲストユーザーとそのセッション情報の削除
         guest_user.destroy
         session.delete(:guest_user_id)
       end
     end
-  end  
+  end
 
   # GET /resource/edit
   # def edit
