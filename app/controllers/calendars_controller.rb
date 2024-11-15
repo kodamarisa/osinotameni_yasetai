@@ -52,6 +52,8 @@ class CalendarsController < ApplicationController
         # @selected_dateを設定
         @selected_date = params[:date] ? Date.parse(params[:date]) : Date.today
         @schedules = @calendar.schedules.where(date: @selected_date) # 日付に基づくスケジュール表示
+        @schedule = @calendar.schedules.new
+        
       else
         flash[:alert] = 'You are not authorized to view this calendar.'
         redirect_to calendars_path

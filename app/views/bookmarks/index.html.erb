@@ -2,7 +2,8 @@
 
 <div class="row">
   <% if @bookmarks.any? %>
-    <%= render partial: 'exercise_row', collection: @bookmarks.map(&:exercise), as: :exercise %>
+    <%= render partial: 'exercise_row', collection: @bookmarks.map(&:exercise), as: :exercise, locals: { bookmarked_exercise_ids: @bookmarked_exercise_ids } %>
+    <% logger.debug "Displaying bookmarks: #{@bookmarked_exercise_ids}" %>  <!-- ここにログ出力を追加 -->
   <% else %>
     <p>You have no bookmarks yet.</p>
   <% end %>

@@ -12,6 +12,7 @@ import "./sidebar";
 import "./schedule";
 import "./exercise_modal";
 import "./custom_calendar";
+import "./bookmark"
 
 // Import Bootstrap
 import "bootstrap";

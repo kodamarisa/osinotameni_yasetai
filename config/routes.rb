@@ -39,7 +39,7 @@ Rails.application.routes.draw do
     collection do
       get :autocomplete
     end
-    resources :bookmarks, only: [:create, :destroy], shallow: true
+    resources :bookmarks, only: [:create, :destroy], shallow: false
   end
   
   # Registration routes

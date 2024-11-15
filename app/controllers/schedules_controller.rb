@@ -17,6 +17,12 @@ class SchedulesController < ApplicationController
   def create
     logger.debug "CREATE: Params: #{params.inspect}"
 
+    selected_date = params[:schedule][:date]
+    if @calendar.schedules.where(date: selected_date).count >= 3
+      flash[:alert] = 'その日にはこれ以上設定できません。'
+      redirect_to exercises_path and return
+    end
+
     @schedule = @calendar.schedules.build(schedule_params)
     if @schedule.save
       logger.info "Schedule successfully created: #{@schedule.inspect}"
@@ -47,7 +53,19 @@ class SchedulesController < ApplicationController
 
   def update
     logger.debug "UPDATE: Schedule ID: #{@schedule.id}, Params: #{params.inspect}"
-
+  
+    # exercise_idが空でないことを確認
+    if params[:schedule][:exercise_id].blank?
+      logger.error "Exercise ID is missing."
+      @exercises = Exercise.all  # エクササイズのリストを再取得
+      respond_to do |format|
+        format.html { render :edit, alert: 'エクササイズを選択してください。' }
+        format.js { render json: { status: 'error', errors: ['エクササイズを選択してください。'] }, status: :unprocessable_entity }
+      end
+      return  # ここで処理を終了
+    end
+  
+    # スケジュールを更新
     if @schedule.update(schedule_params)
       logger.info "Schedule updated: #{@schedule.inspect}"
       respond_to do |format|
@@ -57,17 +75,20 @@ class SchedulesController < ApplicationController
     else
       logger.error "Failed to update schedule: #{@schedule.errors.full_messages}"
       @exercises = Exercise.all
-      render :edit
+      respond_to do |format|
+        format.html { render :edit }
+        format.js { render json: { status: 'error', errors: @schedule.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
-    logger.info "DESTROY: Schedule ID: #{@schedule.id}"
-
-    @schedule.destroy
-    respond_to do |format|
-      format.html { redirect_to calendar_path(@calendar), notice: 'スケジュールが正常に削除されました。' }
-      format.js
+    if @schedule.destroy
+      logger.info "Schedule successfully deleted: #{@schedule.id}"
+      render json: { status: 'success' }, status: :ok
+    else
+      logger.error "Failed to delete schedule: #{@schedule.errors.full_messages}"
+      render json: { status: 'error', errors: @schedule.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

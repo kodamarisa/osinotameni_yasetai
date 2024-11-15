@@ -5,7 +5,8 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_line_user, :line_user_signed_in?
   helper_method :current_guest
-  
+  helper_method :current_user_or_line_user
+
   protected
 
   def configure_permitted_parameters
@@ -29,20 +30,39 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user_or_line_user!
-    unless current_user || current_line_user
+    Rails.logger.debug "Debug - Current User: #{current_user.inspect}"
+    Rails.logger.debug "Debug - Current Line User: #{current_line_user.inspect}"
+    Rails.logger.debug "Debug - Current User or Line User: #{current_user_or_line_user.inspect}"
+
+    unless current_user_or_line_user
       redirect_to root_path, alert: 'You must be logged in to access this section.'
     end
   end
 
-  def set_current_calendar
-    if params[:calendar_id].present?
-      @current_calendar = Calendar.find_by(id: params[:calendar_id])
-    elsif session[:current_calendar_id].present?
-      @current_calendar = Calendar.find_by(id: session[:current_calendar_id])
+  def current_user_or_line_user
+    if user_signed_in?
+      current_user
+    elsif line_user_signed_in?
+      current_line_user
     else
-      @current_calendar = Calendar.create(title: "Default Calendar")
+      nil
+    end
+  end
+
+  def set_current_calendar
+    user = current_user_or_line_user || current_guest
+    Rails.logger.debug "Debug - Current Calendar ID in Session: #{session[:current_calendar_id]}"
+    Rails.logger.debug "Debug - User: #{user.inspect}"
+
+    if session[:current_calendar_id].present?
+      @current_calendar = Calendar.find_by(id: session[:current_calendar_id], user_id: user.id)
+    else
+      existing_calendar = Calendar.find_by(user_id: user.id, user_type: user.class.name)
+      @current_calendar = existing_calendar || Calendar.create(title: "Default Calendar", user: user)
       session[:current_calendar_id] = @current_calendar.id
     end
+
+    Rails.logger.debug "Debug - Current Calendar: #{@current_calendar.inspect}"
   end
 
   def current_calendar

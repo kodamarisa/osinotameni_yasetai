@@ -4,10 +4,25 @@
 
 <% if schedules.any? %>
   <% schedules.each do |schedule| %>
-    <div class="schedule-item">
+    <div class="schedule-item" id="schedule-item-<%= schedule.id %>">
       <p><%= schedule.exercise.name %> <%= schedule.repetitions %> 回 × <%= schedule.sets %> セット</p>
-      <button class="btn btn-sm btn-outline-primary">編集</button>
-      <button class="btn btn-sm btn-outline-danger">削除</button>
+      <button class="btn btn-sm btn-outline-primary edit-schedule-btn" 
+              data-bs-toggle="modal" 
+              data-bs-target="#editModal"
+              data-calendar-id="<%= @calendar.id %>"
+              data-schedule-id="<%= schedule.id %>"
+              data-exercise-id="<%= schedule.exercise_id %>"
+              data-exercise-name="<%= schedule.exercise.name %>"
+              data-reps="<%= schedule.repetitions %>"
+              data-sets="<%= schedule.sets %>"
+              data-date="<%= schedule.date %>">
+        編集
+      </button>
+      <button class="btn btn-sm btn-outline-danger delete-schedule-btn" 
+        data-calendar-id="<%= @calendar.id %>" 
+        data-schedule-id="<%= schedule.id %>">
+        削除
+      </button>
     </div>
   <% end %>
 <% else %>
