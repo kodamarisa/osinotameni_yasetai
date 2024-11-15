@@ -8,10 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 既存のリスナーを削除する関数
   function removeAllListeners(selector, event) {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => {
-      const newEl = el.cloneNode(true); // 新しいノードに置き換え
-      el.parentNode.replaceChild(newEl, el);
+    document.querySelectorAll(selector).forEach((el) => {
+      const clone = el.cloneNode(true); // リスナーを持たないクローンを生成
+      el.parentNode.replaceChild(clone, el); // 元の要素を置き換え
     });
   }
 
@@ -95,12 +94,75 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+    // CSRFトークンを取得
+    const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+
+    // 削除ボタンのリスナーを登録する関数
+    function registerDeleteButtonListeners() {
+      document.querySelectorAll(".delete-schedule-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const scheduleId = button.dataset.scheduleId;
+          const calendarId = button.dataset.calendarId;
+  
+          if (!scheduleId || !calendarId) {
+            alert("スケジュールIDまたはカレンダーIDが取得できませんでした。");
+            return;
+          }
+  
+          // 削除の確認
+          if (!confirm("本当に削除しますか？")) return;
+  
+          // 非同期で削除リクエストを送信
+          fetch(`/calendars/${calendarId}/schedules/${scheduleId}`, {
+            method: "DELETE",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": csrfToken // CSRFトークンを追加
+            }
+          })
+          .then((response) => {
+            if (!response.ok) throw new Error("削除に失敗しました。");
+            document.getElementById(`schedule-item-${scheduleId}`).remove();
+            alert("スケジュールが削除されました。");
+          })
+          .catch((error) => {
+            console.error("削除エラー:", error);
+            alert("スケジュールの削除に失敗しました。");
+          });
+        });
+      });
+    }
+  
+    // スケジュールモーダルを開く際に削除ボタンのリスナーも登録
+    function openScheduleModal(date, calendarId) {
+      fetch(`/calendars/${calendarId}/schedules?date=${date}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("スケジュールの取得に失敗しました。");
+          return response.text();
+        })
+        .then((html) => {
+          document.getElementById("schedule-details").innerHTML = html;
+          scheduleModal?.show();
+  
+          // 編集・削除ボタンのリスナー登録
+          removeAllListeners(".edit-schedule-btn", "click");
+          registerEditButtonListeners();
+          registerDeleteButtonListeners(); // 削除ボタンのリスナー登録
+  
+          registerAddButtonListener();
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("スケジュールの読み込みに失敗しました。");
+        });
+    }
+
   // モーダルのクリーンアップ関数
   function cleanupModal() {
     document.getElementById("exercise_name_display").textContent = "";
     const exerciseIdField = document.querySelector("#schedule-form input[name='schedule[exercise_id]']");
-    //if (exerciseIdField) exerciseIdField.value = "";
-
     document.body.classList.remove("modal-open");
     const backdrop = document.querySelector(".modal-backdrop");
     if (backdrop) backdrop.remove();

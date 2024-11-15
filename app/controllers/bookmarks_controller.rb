@@ -5,36 +5,32 @@ class BookmarksController < ApplicationController
 
   def index
     @bookmarks = current_user_or_line_user.bookmarks.includes(:exercise)
+    @bookmarked_exercise_ids = @bookmarks.pluck(:exercise_id)
+    logger.debug "Bookmarks index: #{@bookmarks.map(&:exercise_id)}"
   end
 
   def create
-    # 既にブックマークが存在するか確認
-    if current_user_or_line_user.bookmarks.exists?(exercise_id: params[:exercise_id])
-      respond_to do |format|
-        format.js { render partial: 'already_bookmarked' } # 既にブックマークされている場合の処理
-        format.json { render json: { status: 'already_bookmarked' }, status: :unprocessable_entity }
-      end
+    user = current_user_or_line_user
+    Rails.logger.debug("Debug - current_user_or_line_user method: #{user.inspect}")
+
+    if user.bookmarks.exists?(exercise_id: params[:exercise_id])
+      logger.debug "Bookmark exists for exercise ID: #{params[:exercise_id]}"
+      @exercise = Exercise.find(params[:exercise_id])
+      render json: { status: 'already_bookmarked', icon: 'fas' }, status: :unprocessable_entity
     else
-      @bookmark = current_user_or_line_user.bookmarks.create(exercise_id: params[:exercise_id])
-      respond_to do |format|
-        format.html { redirect_back(fallback_location: root_path) }
-        format.js   # JSレスポンスを追加
-        format.json { render json: { status: 'created' } }
-      end
+      @bookmark = user.bookmarks.create(exercise_id: params[:exercise_id])
+      @exercise = @bookmark.exercise
+      logger.debug "Response for bookmark toggle: #{ { status: 'created', icon: 'fas' }.to_json }"
+      render json: { status: 'created', icon: 'fas' }
     end
-  end  
+  end
 
   def destroy
-    @bookmark = current_user_or_line_user.bookmarks.find_by(exercise_id: params[:exercise_id])
     if @bookmark.present?
       @bookmark.destroy
-      respond_to do |format|
-        format.html { redirect_back(fallback_location: root_path) }
-        format.js   # JSレスポンスを追加
-        format.json { render json: { status: 'deleted' } }
-      end
+      render json: { status: 'deleted', icon: 'far' }
     else
-      redirect_to bookmarks_path, alert: 'Bookmark not found.'
+      render json: { status: 'not_found' }, status: :not_found
     end
   end  
 
@@ -43,16 +39,14 @@ class BookmarksController < ApplicationController
   def set_exercise
     @exercise = Exercise.find(params[:exercise_id])
   rescue ActiveRecord::RecordNotFound
+    logger.error "Exercise not found for ID: #{params[:exercise_id]}"
     redirect_to exercises_path, alert: 'Exercise not found.'
   end
 
   def set_bookmark
-    @bookmark = current_user_or_line_user.bookmarks.find(params[:id])
+    @bookmark = current_user_or_line_user.bookmarks.find_by(exercise_id: params[:exercise_id])
   rescue ActiveRecord::RecordNotFound
+    logger.error "Bookmark not found for exercise ID: #{params[:exercise_id]}"
     redirect_to bookmarks_path, alert: 'Bookmark not found.'
-  end
-
-  def current_user_or_line_user
-    current_user || current_line_user
   end
 end

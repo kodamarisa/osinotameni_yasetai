@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body">
         <%= form_with(model: [@calendar, @schedule], local: true, id: "schedule-form") do |form| %>
-          <%= form.hidden_field :exercise_id, value: @exercise.id %>
+          <%= form.hidden_field :exercise_id, value: exercise.id %>
           <div class="mb-3">
             <label for="schedule_date" class="form-label">Schedule Date</label>
             <%= form.date_field :date, class: "form-control", id: "schedule_date", required: true %>

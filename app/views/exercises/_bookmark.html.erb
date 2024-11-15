@@ -1,33 +1,21 @@
-<% if user_signed_in? %>
-  <% if current_user&.bookmarks&.exists?(exercise: exercise) %> 
-    <%= link_to '<i class="fas fa-star"></i>'.html_safe, 
-                exercise_bookmark_path(exercise, current_user.bookmarks.find_by(exercise: exercise)), 
-                method: :delete, 
-                remote: true, 
-                id: "bookmark-button-#{exercise.id}", 
-                class: "bookmark-btn btn btn-warning" %>
-  <% else %>
-    <%= link_to '<i class="far fa-star"></i>'.html_safe, 
-                exercise_bookmarks_path(exercise), 
-                method: :post, 
-                remote: true, 
-                id: "bookmark-button-#{exercise.id}", 
-                class: "bookmark-btn btn btn-warning" %>
-  <% end %>
-<% elsif line_user_signed_in? %>
-  <% if line_user&.bookmarks&.exists?(exercise: exercise) %>
-    <%= link_to '<i class="fas fa-star"></i>'.html_safe, 
-                exercise_bookmark_path(exercise, line_user.bookmarks.find_by(exercise: exercise)), 
-                method: :delete, 
-                remote: true, 
-                id: "bookmark-button-#{exercise.id}", 
-                class: "bookmark-btn btn btn-warning" %>
-  <% else %>
-    <%= link_to '<i class="far fa-star"></i>'.html_safe, 
-                exercise_bookmarks_path(exercise), 
-                method: :post, 
-                remote: true, 
-                id: "bookmark-button-#{exercise.id}", 
-                class: "bookmark-btn btn btn-warning" %>
-  <% end %>
+<% bookmark_exists = @bookmarked_exercise_ids.include?(exercise.id) %>
+<% icon_class = bookmark_exists ? 'fas' : 'far' %>
+<% method = bookmark_exists ? :delete : :post %>
+<% 
+  if current_user_or_line_user.present?
+    bookmark = current_user_or_line_user.bookmarks.find_by(exercise: exercise)
+    link_path = bookmark_exists ? exercise_bookmark_path(exercise, bookmark) : exercise_bookmarks_path(exercise)
+  else
+    link_path = exercise_bookmarks_path(exercise)
+  end
+%>
+
+<% if current_user_or_line_user && current_user_or_line_user.persisted? %>
+  <%= link_to icon(icon_class, 'star').html_safe,
+            link_path,
+            method: method,
+            remote: true,
+            id: "bookmark-button-#{exercise.id}",
+            class: 'bookmark-toggle',
+            data: { exercise_id: exercise.id, bookmarked: bookmark_exists } %>
 <% end %>
