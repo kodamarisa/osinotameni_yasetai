@@ -60,6 +60,7 @@ class ApplicationController < ActionController::Base
       existing_calendar = Calendar.find_by(user_id: user.id, user_type: user.class.name)
       @current_calendar = existing_calendar || Calendar.create(title: "Default Calendar", user: user)
       session[:current_calendar_id] = @current_calendar.id
+      Rails.logger.debug "Debug - New Calendar ID set in session: #{session[:current_calendar_id]}"
     end
 
     Rails.logger.debug "Debug - Current Calendar: #{@current_calendar.inspect}"

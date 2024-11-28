@@ -23,7 +23,13 @@ class CalendarsController < ApplicationController
 
     if @calendar.save
       Rails.logger.debug "Calendar saved successfully"
-      @calendar.calendar_users.create(user: current_guest) if current_guest
+      if current_user
+        @calendar.calendar_users.create(user: current_user)
+      elsif current_guest
+        @calendar.calendar_users.create(user: current_guest)
+      elsif current_line_user
+        @calendar.calendar_users.create(user: current_line_user)
+      end
 
       if params[:schedule].present?
         Rails.logger.debug "Schedule params present, calling handle_successful_save"
@@ -42,6 +48,8 @@ class CalendarsController < ApplicationController
 
   def show
     @calendar = Calendar.find_by(id: params[:id])
+    Rails.logger.debug "Debug - Calendar Found: #{@calendar.inspect}"
+
     if @calendar
       # カレンダーの表示権限を確認
       if authorized_to_view?(@calendar)
@@ -55,10 +63,12 @@ class CalendarsController < ApplicationController
         @schedule = @calendar.schedules.new
         
       else
+        Rails.logger.debug "Debug - Unauthorized to View Calendar"
         flash[:alert] = 'You are not authorized to view this calendar.'
         redirect_to calendars_path
       end
     else
+      Rails.logger.debug "Debug - Calendar Not Found"
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end
     expires_now
@@ -113,13 +123,22 @@ class CalendarsController < ApplicationController
   end
 
   def authorized_to_view?(calendar)
-    if current_user
-      calendar.users.include?(current_user)
-    elsif current_line_user
-      calendar.line_users.include?(current_line_user)
-    elsif current_guest
-      calendar.user == current_guest  # GuestUserの場合はhas_oneのため単一カレンダーをチェック
+    Rails.logger.debug "Debug - Current User: #{current_user.inspect}"
+    Rails.logger.debug "Debug - Current Line User: #{current_line_user.inspect}"
+    Rails.logger.debug "Debug - Current Guest: #{current_guest.inspect}"
+    Rails.logger.debug "Debug - Calendar User: #{calendar.user.inspect}"
+
+    if current_user && calendar.users.exists?(id: current_user.id)
+      Rails.logger.debug "Debug - Authorized as Current User"
+      true
+    elsif current_line_user && calendar.line_users.exists?(id: current_line_user.id)
+      Rails.logger.debug "Debug - Authorized as Line User"
+      true
+    elsif current_guest && calendar.user == current_guest
+      Rails.logger.debug "Debug - Authorized as Guest User"
+      true  # GuestUserの場合はhas_oneのため単一カレンダーをチェック
     else
+      Rails.logger.debug "Debug - Not Authorized"
       false
     end
   end

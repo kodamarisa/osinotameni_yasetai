@@ -11,12 +11,13 @@ class LineUsersController < ApplicationController
       if session[:guest_user_id]
         guest_user = GuestUser.find(session[:guest_user_id])
         guest_calendar = Calendar.find_by(user_id: guest_user.id, user_type: 'GuestUser')
-        
+
         line_user_calendar = Calendar.find_by(user_id: @line_user.id, user_type: 'LineUser')
-  
+
         # 既にLineUserにカレンダーがある場合、ゲストカレンダーは削除
         if line_user_calendar.nil? && guest_calendar
           guest_calendar.update(user: @line_user, user_type: 'LineUser')
+          session[:current_calendar_id] = guest_calendar.id
         else
           guest_calendar&.destroy
         end

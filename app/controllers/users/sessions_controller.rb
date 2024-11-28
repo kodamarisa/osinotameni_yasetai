@@ -20,12 +20,12 @@ class Users::SessionsController < Devise::SessionsController
         if session[:guest_user_id]
           guest_user = GuestUser.find(session[:guest_user_id])
           guest_calendar = Calendar.find_by(user_id: guest_user.id, user_type: 'GuestUser')
-          
           user_calendar = Calendar.find_by(user_id: resource.id, user_type: 'User')
           
           # 既にユーザーにカレンダーがある場合はゲストカレンダーを削除
           if user_calendar.nil? && guest_calendar
             guest_calendar.update(user: resource, user_type: 'User')
+            session[:current_calendar_id] = guest_calendar.id
           else
             guest_calendar&.destroy
           end
