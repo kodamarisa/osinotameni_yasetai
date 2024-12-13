@@ -14,10 +14,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 「Add to Schedule」ボタンのリスナーを登録する関数
+  function registerAddToScheduleButtonListeners() {
+    document.querySelectorAll('[data-bs-target="#scheduleModal"]').forEach((button) => {
+      button.addEventListener("click", (event) => {
+        const exerciseId = button.getAttribute("data-exercise_id");
+        const exerciseName = button.getAttribute("data-exercise_name");
+
+        document.getElementById("exercise_name_display").textContent = exerciseName;
+        document.getElementById("schedule_exercise_id").value = exerciseId;
+      });
+    });
+  }
+
   // スケジュールモーダルを開く関数
   function openScheduleModal(date, calendarId) {
-    console.log("Calendar ID:", calendarId, "Date:", date); // デバッグログ
-    fetch(`/calendars/${calendarId}/schedules?date=${date}`, {
+    if (!calendarId || !date) {
+      alert("カレンダーIDまたは日付が指定されていません。");
+      return;
+    }
+
+    const url = `/calendars/${calendarId}/bookmarks?date=${date}`;
+    fetch(url, {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     })
       .then((response) => {
@@ -33,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         registerEditButtonListeners();
 
         registerAddButtonListener(); // 「追加」ボタンのリスナー登録
+        // Add to Scheduleボタンのリスナー登録
+        registerAddToScheduleButtonListeners();
       })
       .catch((error) => {
         console.error(error);

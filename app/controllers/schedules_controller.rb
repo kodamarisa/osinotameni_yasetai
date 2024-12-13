@@ -3,8 +3,11 @@ class SchedulesController < ApplicationController
   before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def new
-    logger.debug "NEW: Calendar ID: #{params[:calendar_id]}, Exercise ID: #{params[:exercise_id]}, Date: #{params[:date]}"
-    
+    if params[:exercise_id].blank?
+      logger.error "Exercise ID is missing in new action."
+      redirect_to exercises_path, alert: 'エクササイズが指定されていません。' and return
+    end
+  
     @calendar = Calendar.find(params[:calendar_id])
     @exercise = Exercise.find(params[:exercise_id])
     @schedule = @calendar.schedules.build(exercise: @exercise)
@@ -12,7 +15,7 @@ class SchedulesController < ApplicationController
     @exercises = Exercise.all
     @selected_exercise = @exercise
     @selected_date = params[:date] ? Date.parse(params[:date]) : Date.today
-  end  
+  end
 
   def create
     logger.debug "CREATE: Params: #{params.inspect}"
@@ -95,8 +98,15 @@ class SchedulesController < ApplicationController
   private
 
   def set_calendar
+    if params[:calendar_id].blank?
+      logger.error "Calendar ID is missing."
+      redirect_to root_path, alert: 'カレンダーが指定されていません。' and return
+    end
+  
     @calendar = Calendar.find(params[:calendar_id])
-    logger.debug "Set Calendar: #{@calendar.inspect}"
+  rescue ActiveRecord::RecordNotFound
+    logger.error "Calendar not found for ID: #{params[:calendar_id]}"
+    redirect_to root_path, alert: '指定されたカレンダーが見つかりません。'
   end
 
   def set_schedule
