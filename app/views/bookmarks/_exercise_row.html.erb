@@ -3,13 +3,18 @@
     <div class="card-body">
       <h4 class="card-title d-flex justify-content-between align-items-center">
         <%= link_to exercise.name, exercise_path(exercise) %>
-
         <%= render 'exercises/bookmark', exercise: exercise, bookmarked_exercise_ids: bookmarked_exercise_ids %>
       </h4>
       <p class="card-text">
         <strong>Difficulty:</strong> <%= exercise.difficulty %><br>
         <strong>Duration:</strong> <%= exercise.is_cardio? ? "#{exercise.minimum_reps_or_distance} m" : "#{exercise.minimum_reps_or_distance} reps" %>
       </p>
+      <!-- Add to Schedule ボタン -->
+      <%= link_to 'Add to Schedule', '#', class: "btn btn-success", 
+            data: { bs_toggle: "modal", bs_target: "#scheduleModal", exercise_id: exercise.id } %>
     </div>
   </div>
 </div>
+
+<!-- モーダル部分 -->
+<%= render 'exercises/schedule_modal', exercise: exercise %>

@@ -1,6 +1,6 @@
 <h1>Customize Page</h1>
 
-<%= link_to 'Go to Bookmarks', bookmarks_path, class: 'btn btn-secondary' %>
+<%= link_to 'Go to Bookmarks', calendar_bookmarks_path(@calendar), class: 'btn btn-secondary' %>
 
 <%= form_with(model: @customize, url: customizes_path, method: :post) do |form| %>
   <div class="form-group">

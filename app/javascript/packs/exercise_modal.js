@@ -7,8 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // モーダルが表示されるときにフォームをリセット
   modalEl.addEventListener("show.bs.modal", () => {
     scheduleForm.reset();
-    document.getElementById("exercise_name_display").textContent = "";
-    document.querySelector("#schedule-form input[name='schedule[exercise_id]']").value = "";
+    const exerciseNameDisplay = document.getElementById("exercise_name_display");
+    if (exerciseNameDisplay) {
+      exerciseNameDisplay.textContent = "";
+    }
+
+    const exerciseInput = document.querySelector("#schedule-form input[name='schedule[exercise_id]']");
+    if (exerciseInput) {
+      exerciseInput.value = "";
+    }
   });
 
   // 各エクササイズボタンにクリックイベントを設定
@@ -34,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     const calendarId = scheduleForm.dataset.calendarId;
     const selectedExerciseId = document.querySelector("#schedule-form input[name='schedule[exercise_id]']").value;
-    const selectedReps = document.getElementById("reps").value;
+    const selectedReps = document.getElementById("repetitions").value;
     const selectedSets = document.getElementById("sets").value;
     const selectedDate = document.getElementById("schedule_date").value;
   

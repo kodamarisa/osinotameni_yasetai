@@ -3,19 +3,25 @@ class SchedulesController < ApplicationController
   before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def new
-    logger.debug "NEW: Calendar ID: #{params[:calendar_id]}, Exercise ID: #{params[:exercise_id]}, Date: #{params[:date]}"
-    
+    logger.debug "NEW: Params: #{params.inspect}"
+    if params[:exercise_id].blank?
+      logger.error "Exercise ID is missing in new action."
+      redirect_to exercises_path, alert: 'エクササイズが指定されていません。' and return
+    end
+  
     @calendar = Calendar.find(params[:calendar_id])
     @exercise = Exercise.find(params[:exercise_id])
     @schedule = @calendar.schedules.build(exercise: @exercise)
+    logger.debug "New Schedule initialized. Calendar: #{@calendar.inspect}, Exercise: #{@exercise.inspect}, Schedule: #{@schedule.inspect}"
   
     @exercises = Exercise.all
     @selected_exercise = @exercise
     @selected_date = params[:date] ? Date.parse(params[:date]) : Date.today
-  end  
+  end
 
   def create
     logger.debug "CREATE: Params: #{params.inspect}"
+    logger.debug "CREATE: calendar_id: #{params[:calendar_id]}" #calendar_idがリクエストに含まれているかを確認
 
     selected_date = params[:schedule][:date]
     if @calendar.schedules.where(date: selected_date).count >= 3
@@ -35,14 +41,16 @@ class SchedulesController < ApplicationController
 
   def index
     logger.debug "INDEX: Calendar ID: #{params[:calendar_id]}, Date: #{params[:date]}"
+    logger.debug "INDEX: Params: #{params.inspect}"
 
     @calendar = Calendar.find(params[:calendar_id])
-    @schedules = @calendar.schedules.where(date: params[:date])
+    @schedules = @calendar.schedules.includes(:exercise).where(date: params[:date])
     @exercises = Exercise.all
+    logger.debug "Schedules retrieved: #{@schedules.inspect}"
 
-    if params[:exercise_id]
-      @exercise = Exercise.find(params[:exercise_id])
-      logger.debug "Selected Exercise: #{@exercise.name}"
+    if params[:schedule_id]
+      @selected_schedule = @schedules.find_by(id: params[:schedule_id])
+      @selected_exercise = @selected_schedule&.exercise
     end
 
     respond_to do |format|
@@ -51,34 +59,48 @@ class SchedulesController < ApplicationController
     end
   end
 
+  def edit
+    logger.debug "EDIT: Params: #{params.inspect}"
+    logger.debug "EDIT: Attempting to find schedule with ID: #{params[:id]} in calendar #{@calendar.id}"
+  
+    @schedule = Schedule.find_by(id: params[:id])
+    if @schedule.nil?
+      logger.error "EDIT: Schedule not found for ID: #{params[:id]}"
+      render json: { error: "スケジュールが見つかりませんでした。" }, status: :not_found and return
+    end
+
+    @selected_exercise = @schedule.exercise  # 追加
+    logger.info "EDIT: Schedule found: #{@schedule.inspect}"
+
+    # 必要なデータをJSONで返す
+    render json: {
+      schedule_id: @schedule.id,
+      exercise_id: @schedule.exercise_id,
+      exercise_name: @selected_exercise.name,
+      date: @schedule.date,
+      repetitions: @schedule.repetitions,
+      sets: @schedule.sets
+    }
+  end
+
   def update
     logger.debug "UPDATE: Schedule ID: #{@schedule.id}, Params: #{params.inspect}"
+    logger.debug "UPDATE: Current Schedule Data: #{@schedule.inspect}"
   
     # exercise_idが空でないことを確認
-    if params[:schedule][:exercise_id].blank?
+    if params[:schedule][:schedule_exercise_id].blank?
       logger.error "Exercise ID is missing."
-      @exercises = Exercise.all  # エクササイズのリストを再取得
-      respond_to do |format|
-        format.html { render :edit, alert: 'エクササイズを選択してください。' }
-        format.js { render json: { status: 'error', errors: ['エクササイズを選択してください。'] }, status: :unprocessable_entity }
-      end
-      return  # ここで処理を終了
+      render json: { status: 'error', message: 'エクササイズが指定されていません。' }, status: :unprocessable_entity
+      return
     end
-  
+
     # スケジュールを更新
     if @schedule.update(schedule_params)
       logger.info "Schedule updated: #{@schedule.inspect}"
-      respond_to do |format|
-        format.html { redirect_to calendar_path(@calendar), notice: 'スケジュールが正常に更新されました。' }
-        format.js
-      end
+      render json: { status: 'success', message: 'スケジュールが正常に更新されました。', schedule: @schedule }
     else
       logger.error "Failed to update schedule: #{@schedule.errors.full_messages}"
-      @exercises = Exercise.all
-      respond_to do |format|
-        format.html { render :edit }
-        format.js { render json: { status: 'error', errors: @schedule.errors.full_messages }, status: :unprocessable_entity }
-      end
+      render json: { status: 'error', errors: @schedule.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -96,15 +118,18 @@ class SchedulesController < ApplicationController
 
   def set_calendar
     @calendar = Calendar.find(params[:calendar_id])
-    logger.debug "Set Calendar: #{@calendar.inspect}"
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: "カレンダーが見つかりませんでした。"
   end
 
   def set_schedule
     @schedule = @calendar.schedules.find(params[:id])
-    logger.debug "Set Schedule: #{@schedule.inspect}"
+  rescue ActiveRecord::RecordNotFound
+    logger.error "Schedule not found for ID: #{params[:id]}"
+    render json: { error: '指定されたスケジュールが見つかりませんでした。' }, status: :not_found
   end
 
   def schedule_params
-    params.require(:schedule).permit(:exercise_id, :repetitions, :sets, :date)
+    params.require(:schedule).permit(:calendar_id, :exercise_id, :name, :repetitions, :sets, :date)
   end
 end
