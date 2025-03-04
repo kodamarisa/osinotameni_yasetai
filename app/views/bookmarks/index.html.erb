@@ -1,14 +1,10 @@
 <h1>My Bookmarks</h1>
 
-<% if @bookmarks.any? %>
-  <ul>
-    <% @bookmarks.each do |bookmark| %>
-      <li>
-        <%= link_to bookmark.exercise.name, exercise_path(bookmark.exercise) %>
-        <%= link_to 'Remove', bookmark_path(bookmark), method: :delete, data: { confirm: 'Are you sure?' } %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>You have no bookmarks yet.</p>
-<% end %>
+<div class="row">
+  <% if @bookmarks.any? %>
+    <%= render partial: 'exercise_row', collection: @bookmarks.map(&:exercise), as: :exercise, locals: { bookmarked_exercise_ids: @bookmarked_exercise_ids } %>
+    <% logger.debug "Displaying bookmarks: #{@bookmarked_exercise_ids}" %>  <!-- ここにログ出力を追加 -->
+  <% else %>
+    <p>You have no bookmarks yet.</p>
+  <% end %>
+</div>

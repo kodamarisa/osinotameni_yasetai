@@ -1,8 +1,25 @@
-<div id="schedule-modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <div id="schedule-details">
-      <%= render partial: 'form', locals: { calendar: @calendar, schedule: @schedule, exercises: @exercises } %>
-    </div>
+<%= form_with(model: @schedule, local: true) do |form| %>
+  <div class="field">
+    <%= form.label :date %>
+    <%= form.date_field :date, value: @schedule.date %>
   </div>
-</div>
+
+  <div class="field">
+    <%= form.label :exercise_id, "Exercise" %>
+    <%= form.collection_select :exercise_id, @exercises, :id, :name, selected: @schedule.exercise_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :repetitions %>
+    <%= form.number_field :repetitions, value: @schedule.repetitions %>
+  </div>
+
+  <div class="field">
+    <%= form.label :sets %>
+    <%= form.number_field :sets, value: @schedule.sets %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "決定", class: "btn btn-primary" %>
+  </div>
+<% end %>

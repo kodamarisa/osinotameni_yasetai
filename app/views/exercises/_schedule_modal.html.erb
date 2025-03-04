@@ -1,0 +1,31 @@
+<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scheduleModalLabel">Schedule Exercise: <span id="exercise_name_display"><%= exercise.name %></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with(model: [@calendar, @schedule], local: true, id: "schedule-form") do |form| %>
+          <%= form.hidden_field :exercise_id, value: exercise.id, id: "schedule_exercise_id" %>
+          <div class="mb-3">
+            <label for="schedule_date" class="form-label">Schedule Date</label>
+            <%= form.date_field :date, class: "form-control", id: "schedule_date", required: true %>
+          </div>
+          <div class="mb-3">
+            <label for="repetitions" class="form-label">Reps/Distance</label>
+            <%= form.number_field :repetitions, class: "form-control", id: "repetitions", required: true %>
+          </div>
+          <div class="mb-3">
+            <label for="sets" class="form-label">Sets</label>
+            <%= form.number_field :sets, class: "form-control", id: "sets", value: "1", required: true %>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <%= form.submit "Save changes", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

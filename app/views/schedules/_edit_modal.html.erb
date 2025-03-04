@@ -1,0 +1,38 @@
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editModalLabel">
+          Edit Schedule: <span id="exercise_name_display"><%= @selected_exercise.name if @selected_exercise %></span>
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: [@calendar, @schedule], method: :patch, id: "schedule-form" do |form| %>
+            <%= form.hidden_field :calendar_id, value: @calendar.id %>
+            <%= form.hidden_field :id, id: 'schedule_id', value: @schedule&.id %>
+            <%= form.hidden_field :schedule_exercise_id, id: 'schedule_exercise_id', value: @schedule_exercise_id %>
+          <div class="mb-3">
+            <label for="schedule_date" class="form-label">Schedule Date</label>
+            <%= form.date_field :date, class: "form-control", id: "schedule_date", required: true %>
+          </div>
+
+          <div class="mb-3">
+            <label for="repetitions" class="form-label">Reps/Distance</label>
+            <%= form.number_field :repetitions, class: "form-control", id: "repetitions", min: 1, required: true %>
+          </div>
+
+          <div class="mb-3">
+            <label for="sets" class="form-label">Sets</label>
+            <%= form.number_field :sets, class: "form-control", id: "sets", min: 1, required: true %>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <%= form.submit "Save changes", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

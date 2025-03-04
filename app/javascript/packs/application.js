@@ -9,10 +9,14 @@ import * as ActiveStorage from "@rails/activestorage";
 import "channels";
 import "controllers";
 import "./sidebar";
-import "./schedule";
+//import "./schedule";
+//import "./exercise_modal";
 import "./custom_calendar";
+import "./bookmark"
+
+// Import Bootstrap
+import "bootstrap";
 
 Rails.start();
 Turbolinks.start();
 ActiveStorage.start();
-  

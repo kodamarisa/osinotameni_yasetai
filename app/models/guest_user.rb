@@ -6,6 +6,6 @@ class GuestUser < ApplicationRecord
   private
 
   def create_guest_calendar
-    create_calendar!(title: "Guest Calendar")
+    self.create_calendar!(title: "Guest Calendar", user_type: "GuestUser", user_id: self.id)
   end
 end

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get 'static_pages/privacy_policy'
   get 'static_pages/terms_of_service'
-  root 'home#index'
+  root 'calendars#new'
 
   # Devise routes
   devise_for :users, controllers: {
@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   # Calendar routes
   resources :calendars, except: [:destroy, :update] do
     resources :schedules, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :bookmarks, only: [:index, :create, :destroy]
   end
 
   # Exercise routes
@@ -39,7 +40,7 @@ Rails.application.routes.draw do
     collection do
       get :autocomplete
     end
-    resources :bookmarks, only: [:create, :destroy], shallow: true
+    resources :bookmarks, only: [:create, :destroy], shallow: false
   end
   
   # Registration routes
@@ -52,9 +53,6 @@ Rails.application.routes.draw do
 
   # Customize routes
   resources :customizes, only: [:new, :edit, :create, :update]
-
-  # Bookmarks route
-  resources :bookmarks, only: [:index]
 
   # Static pages routes
   scope controller: :static_pages do

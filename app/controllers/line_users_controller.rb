@@ -8,9 +8,23 @@ class LineUsersController < ApplicationController
   def create
     @line_user = LineUser.new(line_user_params)
     if @line_user.save
-      if session[:current_calendar_id].present?
-        calendar = Calendar.find(session[:current_calendar_id])
-        calendar.users << @line_user
+      if session[:guest_user_id]
+        guest_user = GuestUser.find(session[:guest_user_id])
+        guest_calendar = Calendar.find_by(user_id: guest_user.id, user_type: 'GuestUser')
+
+        line_user_calendar = Calendar.find_by(user_id: @line_user.id, user_type: 'LineUser')
+
+        # 既にLineUserにカレンダーがある場合、ゲストカレンダーは削除
+        if line_user_calendar.nil? && guest_calendar
+          guest_calendar.update(user: @line_user, user_type: 'LineUser')
+          session[:current_calendar_id] = guest_calendar.id
+        else
+          guest_calendar&.destroy
+        end
+  
+        # ゲストユーザー削除
+        guest_user.destroy
+        session.delete(:guest_user_id)
       end
       redirect_to line_user_path(@line_user), notice: 'Line User was successfully created.'
     else
@@ -30,9 +44,9 @@ class LineUsersController < ApplicationController
       head :bad_request
       return
     end
-
+  
     events = LINE_CLIENT.parse_events_from(body)
-
+  
     events.each do |event|
       case event
       when Line::Bot::Event::Message
@@ -41,23 +55,46 @@ class LineUsersController < ApplicationController
           line_user_id = event['source']['userId']
           profile = LINE_CLIENT.get_profile(line_user_id)
           user_data = JSON.parse(profile.body)
-
+  
           line_user = LineUser.find_or_initialize_by(line_user_id: line_user_id)
           line_user.name = user_data['displayName']
           line_user.profile_image_url = user_data['pictureUrl']
-          line_user.save!
-
-          message = {
-            type: 'text',
-            text: "You have been successfully registered, #{line_user.name}!"
-          }
-          LINE_CLIENT.reply_message(event['replyToken'], message)
+  
+          if line_user.save!
+            if session[:guest_user_id]
+              guest_user = GuestUser.find(session[:guest_user_id])
+  
+              # ゲストユーザーからLineUserへのカレンダーの移行
+              guest_calendars = Calendar.where(user_id: guest_user.id, user_type: 'GuestUser')
+              guest_calendars.each do |calendar|
+                calendar.update(user: line_user, user_type: 'LineUser')
+              end
+  
+              # カレンダーのユーザー関連情報の更新
+              CalendarUser.where(user_id: guest_user.id, user_type: 'GuestUser').update_all(user_id: line_user.id, user_type: 'LineUser')
+  
+              guest_user.destroy
+              session.delete(:guest_user_id)
+            end
+  
+            # オプション: line_userにカレンダーを関連付け
+            if session[:current_calendar_id].present?
+              calendar = Calendar.find(session[:current_calendar_id])
+              calendar.users << line_user unless calendar.users.include?(line_user)
+            end
+  
+            message = {
+              type: 'text',
+              text: "登録が完了しました、#{line_user.name}さん！"
+            }
+            LINE_CLIENT.reply_message(event['replyToken'], message)
+          end
         end
       end
     end
-
+  
     head :ok
-  end
+  end  
 
   private
 

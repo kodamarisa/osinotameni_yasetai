@@ -20,14 +20,32 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super do |user|
       if session[:guest_user_id]
         guest_user = GuestUser.find(session[:guest_user_id])
-        guest_calendars = Calendar.where(user_id: guest_user.id, user_type: 'GuestUser')
-
-        guest_calendars.each do |calendar|
-          calendar.update(user: user, user_type: 'User')
+        Rails.logger.info "Guest user found: #{guest_user.id}"
+  
+        guest_calendar = if session[:current_calendar_id]
+                            Calendar.find_by(id: session[:current_calendar_id], user_id: guest_user.id, user_type: 'GuestUser')
+                         else
+                            Calendar.find_by(user_id: guest_user.id, user_type: 'GuestUser')
+                         end
+        
+  
+        if guest_calendar
+          Rails.logger.info "Found guest calendar: #{guest_calendar.inspect}"
+          Rails.logger.debug "Guest calendar successfully linked to user: #{guest_calendar.id}"
+          guest_calendar.update(user: user, user_type: 'User')
+          CalendarUser.create(calendar: guest_calendar, user: user) # CalendarUser レコードを作成
+          session[:current_calendar_id] = guest_calendar.id
+          Rails.logger.info "Guest calendar successfully linked to user. New calendar ID: #{guest_calendar.id}"
+        else
+          new_calendar = Calendar.create(user: user, user_type: 'User')
+          session[:current_calendar_id] = new_calendar.id
+          Rails.logger.info "New calendar created for user. Calendar ID: #{new_calendar.id}"
         end
-
+  
+        # ゲストユーザーとそのセッション情報の削除
         guest_user.destroy
         session.delete(:guest_user_id)
+        Rails.logger.info "Guest user destroyed and session cleared."
       end
     end
   end
