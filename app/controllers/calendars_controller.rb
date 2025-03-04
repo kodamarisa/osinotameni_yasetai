@@ -86,6 +86,11 @@ class CalendarsController < ApplicationController
     end
   end
 
+  def destroy
+    @calendar.destroy
+    redirect_to calendars_path, notice: 'Calendar was successfully deleted.'
+  end
+
   private
 
   def set_calendar
